@@ -1,0 +1,103 @@
+{
+   "buildings": [
+      {
+         "building_id": 1,
+         "name": "Butcher",
+         "door_orientation": "South",
+         "validation_color": "red",
+         "validation_symbol": "square",
+         "grid_pos_x": 2,
+         "grid_pos_z": 1,
+         "world_pos_x": 68.87,
+         "world_pos_z": 36.33
+      },
+      {
+         "building_id": 2,
+         "name": "Barn",
+         "door_orientation": "East",
+         "validation_color": "orange",
+         "validation_symbol": "circle",
+         "grid_pos_x": 5,
+         "grid_pos_z": 2,
+         "world_pos_x": 162.97,
+         "world_pos_z": 74.07
+      },
+      {
+         "building_id": 3,
+         "name": "Potter",
+         "door_orientation": "East",
+         "validation_color": "white",
+         "validation_symbol": "triangle",
+         "grid_pos_x": 0,
+         "grid_pos_z": 1,
+         "world_pos_x": 23.15,
+         "world_pos_z": 38
+      },
+      {
+         "building_id": 4,
+         "name": "Windmill",
+         "door_orientation": "North",
+         "validation_color": "green",
+         "validation_symbol": "star",
+         "grid_pos_x": 4,
+         "grid_pos_z": 1,
+         "world_pos_x": 141.67,
+         "world_pos_z": 42.07
+      },
+      {
+         "building_id": 5,
+         "name": "Blacksmith",
+         "door_orientation": "East",
+         "validation_color": "brown",
+         "validation_symbol": "moon",
+         "grid_pos_x": 0,
+         "grid_pos_z": 4,
+         "world_pos_x": 19.07,
+         "world_pos_z": 138.79
+      },
+      {
+         "building_id": 6,
+         "name": "Tavern",
+         "door_orientation": "South",
+         "validation_color": "pink",
+         "validation_symbol": "cross",
+         "grid_pos_x": 3,
+         "grid_pos_z": 3,
+         "world_pos_x": 106.73,
+         "world_pos_z": 112.29
+      },
+      {
+         "building_id": 7,
+         "name": "Bakery",
+         "door_orientation": "West",
+         "validation_color": "purple",
+         "validation_symbol": "arrow",
+         "grid_pos_x": 2,
+         "grid_pos_z": 4,
+         "world_pos_x": 70.37,
+         "world_pos_z": 130.37
+      },
+      {
+         "building_id": 8,
+         "name": "Tailor",
+         "door_orientation": "North",
+         "validation_color": "yellow",
+         "validation_symbol": "semicircle",
+         "grid_pos_x": 4,
+         "grid_pos_z": 0,
+         "world_pos_x": 129.37,
+         "world_pos_z": 23.77
+      },
+      {
+         "building_id": 9,
+         "name": "Cooper",
+         "door_orientation": "West",
+         "validation_color": "blue",
+         "validation_symbol": "cloud",
+         "grid_pos_x": 0,
+         "grid_pos_z": 2,
+         "world_pos_x": 13.05,
+         "world_pos_z": 76.26
+      }
+   ]
+}
