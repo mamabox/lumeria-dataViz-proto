@@ -329,8 +329,8 @@ def build_event_timeline(
 
     # --- Layout: thin strip ---
     fig.update_layout(
-        height=120,
-        margin=dict(l=10, r=10, t=10, b=40),
+        height=140,
+        margin=dict(l=10, r=10, t=10, b=50),
         legend=dict(
             orientation="h",
             yanchor="bottom",

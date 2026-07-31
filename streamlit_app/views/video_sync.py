@@ -133,18 +133,19 @@ with col_slider:
 
 game_time = time_list[frame_index]
 st.caption(f"Game Time: {game_time:.2f}s | Video Time: {game_time + offset:.2f}s")
+
 # --- Display ---
-col_map, col_video = st.columns(2)
+st.subheader("Game Map")
+st.plotly_chart(
+    st.session_state["snapshots"][frame_index],
+    config={"staticPlot": False, "responsive": False},
+)
 
-with col_map:
-    st.plotly_chart(
-        st.session_state["snapshots"][frame_index],
-        config={"staticPlot": False, "responsive": False},
-    )
-
-with col_video:
-    frame_rgb = player.get_frame_at_time(game_time, offset=offset)
-    if frame_rgb is not None:
-        st.image(frame_rgb, width="stretch")
-    else:
-        st.warning("No frame available at this time")
+st.subheader("Video Frame")
+game_time = time_list[frame_index]
+st.caption(f"Game Time: {game_time:.2f}s | Video Time: {game_time + offset:.2f}s")
+frame_rgb = player.get_frame_at_time(game_time, offset=offset)
+if frame_rgb is not None:
+    st.image(frame_rgb)
+else:
+    st.warning("No frame available at this time")
