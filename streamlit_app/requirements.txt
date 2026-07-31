@@ -4,4 +4,4 @@ pandas
 numpy
 pillow
 opencv-python-headless
-kaleido
+kaleido==0.2.1
