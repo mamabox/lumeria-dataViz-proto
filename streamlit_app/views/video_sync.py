@@ -67,6 +67,13 @@ if "snapshots" not in st.session_state:
             timeline_df=data["timeline_df"],
             game_events_df=data["game_data"]["game_events_df"],
         )
+
+        fig.update_layout(
+            width=700,
+            height=600,
+            margin=dict(l=20, r=20, t=40, b=20),
+        )
+
         st.session_state["snapshots"] = [
             get_frame_snapshot(fig, i)
             for i in range(len(data["timeline_df"]))

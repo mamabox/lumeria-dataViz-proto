@@ -32,11 +32,7 @@ fig = build_animated_figure(
     challenge_duration=data["game_data"]["challenge_duration"],
 )
 
-fig.update_layout(
-    width=600,
-    height=500,
-    margin=dict(l=20, r=20, t=40, b=20),
-)
+
 
 # --- Display ---
 st.plotly_chart(fig)
