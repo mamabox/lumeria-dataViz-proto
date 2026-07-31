@@ -59,14 +59,15 @@ Built as a capstone project for the  [Python Programming certification](https://
 """)
 
 # --- Tech Stack ---
-with st.expander("🛠️ Tech Stack"):
+with st.expander("Tech Stack", expanded=True):
     st.markdown("""
     - **Game engine:** Unity (C#)
     - **Data pipeline:** Python, Pandas, NumPy
     - **Visualization:** Plotly, Matplotlib
     - **Web app:** Streamlit
     - **Video processing:** OpenCV
-    - **Design:** Illustrator, Blender
+    - **Design:** Illustrator
+    - **3D assets optimization:** Blender
     """)
 
 # --- Links ---
@@ -84,4 +85,4 @@ with col_c:
     st.link_button("Python Certification (Nomades)", "https://nomades.ch/certification/certifications-python-programming-language/")
 
 with col_d:
-    st.link_button("Contact", "https://www.linkedin.com/in/yourprofile")
+    st.link_button("Contact", "https://www.linkedin.com/in/fmdiouf/")
