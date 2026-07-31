@@ -33,8 +33,8 @@ fig = build_animated_figure(
 )
 
 fig.update_layout(
-    width=700,
-    height=600,
+    width=600,
+    height=500,
     margin=dict(l=20, r=20, t=40, b=20),
 )
 
