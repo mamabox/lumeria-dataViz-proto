@@ -69,8 +69,8 @@ if "snapshots" not in st.session_state:
         )
 
         fig.update_layout(
-            width=600,
-            height=500,
+            width=500,
+            height=400,
             margin=dict(l=20, r=20, t=40, b=20),
         )
 
