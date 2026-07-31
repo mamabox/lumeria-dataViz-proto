@@ -8,15 +8,18 @@ import os
 from modules.data_loader import get_game_data_dict, get_buildings_df, get_player_timeline_df
 from modules.map_config import get_map_config, LEVELS
 
+# Get the directory where sidebar.py lives (streamlit_app/components/)
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Default file paths (relative to streamlit_app/)
 DEFAULTS = {
-    "game_data": "defaults/example_game_data.json",
-    "buildings": "defaults/example_buildings.json",
-    "map_image": "defaults/example_map_level1.png",
-    "video": "defaults/example_gameplay.mp4",
-
+    "game_data": os.path.join(_BASE_DIR, "defaults", "example_game_data.json"),
+    "buildings": os.path.join(_BASE_DIR, "defaults", "example_buildings.json"),
+    "map_image": os.path.join(_BASE_DIR, "defaults", "example_map_level1.png"),
 }
 
+if os.path.exists(os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")):
+    DEFAULTS["video"] = os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")
 
 def render_sidebar():
     """
