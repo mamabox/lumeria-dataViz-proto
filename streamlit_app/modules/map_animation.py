@@ -245,6 +245,7 @@ def get_frame_snapshot(fig: go.Figure, frame_index: int) -> go.Figure:
     layout_dict["sliders"] = []
     layout_dict["annotations"] = []
     layout_dict["height"] = 500
+    layout_dict["margin"] = dict(l=20, r=20, t=40, b=20)
 
     snapshot = go.Figure(data=base_data, layout=layout_dict)
     return snapshot

@@ -98,6 +98,8 @@ def build_base_figure(
     fig.update_layout(
         width=800,
         height=700,
+        autosize=False,
+        margin=dict(l=20, r=20, t=40, b=20),
         xaxis=dict(
             range=[axis_range.x_min, axis_range.x_max],
             dtick=30,
