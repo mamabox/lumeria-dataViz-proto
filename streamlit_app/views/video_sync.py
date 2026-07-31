@@ -69,8 +69,8 @@ if "snapshots" not in st.session_state:
         )
 
         fig.update_layout(
-            width=700,
-            height=600,
+            width=600,
+            height=500,
             margin=dict(l=20, r=20, t=40, b=20),
         )
 
@@ -116,7 +116,7 @@ with col_input:
         min_value=float(time_list[0]),
         max_value=float(time_list[-1]),
         value=float(time_list[0]),
-        step=1.0,
+        step=2.0,
         key="time_jump",
         on_change=on_time_jump,
     )
