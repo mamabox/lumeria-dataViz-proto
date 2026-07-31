@@ -78,13 +78,13 @@ with st.expander("📊 Data Preview"):
     ])
 
     with tab1:
-        st.dataframe(data["timeline_df"].head(10), use_container_width=True)
+        st.dataframe(data["timeline_df"].head(10), width="stretch")
 
     with tab2:
-        st.dataframe(data["game_data"]["challenge_df"], use_container_width=True)
+        st.dataframe(data["game_data"]["challenge_df"], width="stretch")
 
     with tab3:
-        st.dataframe(data["game_data"]["game_events_df"], use_container_width=True)
+        st.dataframe(data["game_data"]["game_events_df"], width="stretch")
 
     with tab4:
-        st.dataframe(data["game_data"]["validations_df"], use_container_width=True)
+        st.dataframe(data["game_data"]["validations_df"], width="stretch")

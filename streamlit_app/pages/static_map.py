@@ -26,7 +26,7 @@ fig = build_static_figure(
 )
 
 # --- Display ---
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 # --- Exports ---
 st.subheader("Downloads")

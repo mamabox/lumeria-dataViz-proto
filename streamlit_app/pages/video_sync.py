@@ -79,7 +79,7 @@ event_timeline = build_event_timeline(
     game_events_df=data["game_data"]["game_events_df"],
     player_movement_df=data["timeline_df"],
 )
-st.plotly_chart(event_timeline, use_container_width=True, config={"staticPlot": False})
+st.plotly_chart(event_timeline, width="stretch", config={"staticPlot": False})
 
 
 # --- 2. Synced scrubbing ---
@@ -145,6 +145,6 @@ with col_map:
 with col_video:
     frame_rgb = player.get_frame_at_time(game_time, offset=offset)
     if frame_rgb is not None:
-        st.image(frame_rgb, use_container_width=True)
+        st.image(frame_rgb, width="stretch")
     else:
         st.warning("No frame available at this time")

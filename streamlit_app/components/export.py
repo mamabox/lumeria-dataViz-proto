@@ -28,10 +28,13 @@ def image_download_button(
     label: str = "Download PNG",
 ) -> None:
     """Render a download button for a plotly figure as PNG."""
-    img_bytes = fig.to_image(format="png", scale=2)
-    st.download_button(
-        label=label,
-        data=img_bytes,
-        file_name=filename,
-        mime="image/png",
-    )
+    try:
+        img_bytes = fig.to_image(format="png", scale=2)
+        st.download_button(
+            label=label,
+            data=img_bytes,
+            file_name=filename,
+            mime="image/png",
+        )
+    except Exception:
+        st.caption("⚠️ PNG export is only available when running locally.")
