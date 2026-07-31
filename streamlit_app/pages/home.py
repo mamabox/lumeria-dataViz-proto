@@ -9,48 +9,82 @@ from components.sidebar import render_sidebar
 data = render_sidebar()
 
 # --- Page content ---
-st.title("🏠 Lumeria Data Visualization")
+st.title("Luméria Data Visualization")
 
 st.markdown("""
-This tool visualizes player movement and game events 
-from the Lumeria educational game.
-
-Use the sidebar to upload your own data files or explore 
-with the default dataset.
+Replay and explore a Luméria game session. See the player's journey 
+through the virtual city — their movement, decisions, and the events 
+they encounter — reconstructed from the game's raw data.
 """)
 
-# --- Quick overview of loaded data ---
-st.subheader("Loaded Data Overview")
+# --- How to use ---
+st.markdown("""
+**Get started:** the app loads with example data so everything works 
+right away. Upload your own game files in the sidebar to analyze a 
+different session.
+""")
 
-col1, col2, col3, col4, col5 = st.columns(5)
+# --- Page overview ---
+st.markdown("---")
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.caption("Save Date")
-    st.write(data["game_data"]["save_time"].strftime("%Y-%m-%d %H:%M"))
+    st.markdown("**🗺️ Static Map**")
+    st.caption("Full session at a glance — every position, event, and attempt on one map. Export as PNG.")
 
 with col2:
-   st.caption("Player ID")
-   st.write(data["game_data"]["player_id"])
-
-with col5:
-    st.caption("Movement Points")
-    st.write(len(data["timeline_df"]))
-
-with col4:
-   st.caption("Duration")
-   st.write(f"{data['game_data']['challenge_duration']:.1f}s")
+    st.markdown("**▶️ Animated Map**")
+    st.caption("Watch the session unfold in real time. Scrub, play at different speeds, export as MP4.")
 
 with col3:
-   st.caption("Challenge")
-   st.write(f"{data['game_data']['challenge_id']}")
+    st.markdown("**🎬 Video + Animation**")
+    st.caption("Compare the game replay side by side with gameplay video footage.")
 
-# --- Preview dataframes ---
+with col4:
+    st.markdown("**ℹ️ About**")
+    st.caption("Project context, credits, and links.")
 
-with st.expander("Buildings Data"):
-    st.dataframe(data["buildings_df"])
+# --- Session summary ---
+st.markdown("---")
+st.subheader("Current Session")
 
-with st.expander("Game Events"):
-    st.dataframe(data["game_data"]["game_events_df"])
+col_a, col_b, col_c, col_d, col_e = st.columns(5)
 
-with st.expander("Player Movement Data (first 10 data points)"):
-    st.dataframe(data["timeline_df"].head(10))
+with col_a:
+    st.caption("Player")
+    st.write(data["game_data"]["player_id"])
+
+with col_b:
+    st.caption("Challenge")
+    st.write(data["game_data"]["challenge_id"])
+
+with col_c:
+    st.caption("Duration")
+    st.write(f"{data['game_data']['challenge_duration']:.1f}s")
+
+with col_d:
+    st.caption("Data Points")
+    st.write(len(data["timeline_df"]))
+
+with col_e:
+    st.caption("Recorded")
+    st.write(data["game_data"]["save_time"].strftime("%Y-%m-%d %H:%M"))
+
+# --- Data preview ---
+with st.expander("📊 Data Preview"):
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Player Movement", "Challenges", "Game Events", "Validations"
+    ])
+
+    with tab1:
+        st.dataframe(data["timeline_df"].head(10), use_container_width=True)
+
+    with tab2:
+        st.dataframe(data["game_data"]["challenge_df"], use_container_width=True)
+
+    with tab3:
+        st.dataframe(data["game_data"]["game_events_df"], use_container_width=True)
+
+    with tab4:
+        st.dataframe(data["game_data"]["validations_df"], use_container_width=True)

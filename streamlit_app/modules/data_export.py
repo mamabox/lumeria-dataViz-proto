@@ -40,10 +40,9 @@ def export_all_to_csv(game_data: dict, output_dir: str) -> list[str]:
 def export_animation_to_mp4(
     fig: go.Figure,
     output_path: str = "temp_animation.mp4",
-    fps: int = 10,
+    fps: int = 1,
     width: int = 800,
     height: int = 700,
-    every_n: int = 1,
 ) -> bytes:
     """
     Render the animated figure's frames to MP4.
@@ -63,19 +62,18 @@ def export_animation_to_mp4(
     writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     for i, frame in enumerate(fig.frames):
-        if i % every_n != 0:
-            continue
 
-        # Start with base traces, swap in this frame's data
-        frame_data = list(base_data)
+        # Copy base traces as dicts (preserves all styling)
+        frame_data = [trace.to_plotly_json() for trace in base_data]
+
+        # Merge frame data into base (keeps styles, updates x/y/text)
         for trace_data, trace_idx in zip(frame.data, frame.traces):
-            frame_data[trace_idx] = trace_data
+            frame_data[trace_idx].update(trace_data.to_plotly_json())
 
-        # Fresh figure with correct data
         frame_fig = go.Figure(data=frame_data, layout=layout)
         frame_fig.update_layout(title=f"Game Time: {frame.name}")
 
-        # Render to image
+        # Render
         img_bytes = frame_fig.to_image(format="png", width=width, height=height)
         img_array = np.frombuffer(img_bytes, dtype=np.uint8)
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)

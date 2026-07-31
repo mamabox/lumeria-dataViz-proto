@@ -228,6 +228,26 @@ def build_frames(
 
     return frames
 
+# ======================== HELPER ======================== #
+
+def get_frame_snapshot(fig: go.Figure, frame_index: int) -> go.Figure:
+    import plotly.graph_objects as go
+
+    frame = fig.frames[frame_index]
+    base_data = [trace.to_plotly_json() for trace in fig.data]
+
+    for trace_data, trace_idx in zip(frame.data, frame.traces):
+        base_data[trace_idx].update(trace_data.to_plotly_json())
+
+    # Copy layout as dict, strip controls
+    layout_dict = fig.layout.to_plotly_json()
+    layout_dict["updatemenus"] = []
+    layout_dict["sliders"] = []
+    layout_dict["annotations"] = []
+    layout_dict["height"] = 500
+
+    snapshot = go.Figure(data=base_data, layout=layout_dict)
+    return snapshot
 
 # ======================== PLAYBACK CONTROLS ======================== #
 

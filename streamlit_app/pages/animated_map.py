@@ -14,7 +14,7 @@ from modules.data_export import export_animation_to_mp4
 data = render_sidebar()
 
 # --- Page content ---
-st.title("▶️ Animated Map")
+st.title("Animated Map")
 
 # --- Build figure ---
 fig = build_base_figure(
@@ -37,14 +37,21 @@ st.plotly_chart(fig)
 
 # --- Exports ---
 st.subheader("Downloads")
-st.write("'Export MP4' may take a few minutes.")
+st.write("'Export MP4' may take a few minutes. It renders a video at 10fps.")
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
+    speed = st.selectbox("Export speed", ["1x", "8x", "16x"], index=1)
+    export_fps = int(speed.replace("x", ""))
+
     if st.button("🎬 Export MP4"):
-      with st.spinner('Rendering frames... "Patience Iago, patience"'):
-         video_bytes = export_animation_to_mp4(fig, every_n=2)
+      st.warning("⚠️ Don't navigate away — export will be cancelled.")
+      with st.spinner('Rendering frames... "Patience Iago, patience."'):
+         video_bytes = export_animation_to_mp4(fig, fps=export_fps)
+         st.session_state["exported_video"] = video_bytes
+
+    if "exported_video" in st.session_state:
          st.download_button(
                label="💾 Download MP4",
                data=video_bytes,

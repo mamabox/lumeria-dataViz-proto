@@ -252,3 +252,109 @@ def build_static_figure(
     fig.update_layout(title=title)
 
     return fig
+
+def build_event_timeline(
+    timeline_df: pd.DataFrame,
+    game_events_df: pd.DataFrame,
+    player_movement_df: pd.DataFrame,
+) -> go.Figure:
+    """
+    Build a horizontal timeline bar showing events as icons.
+    Hover for details. No interaction — visual reference only.
+    """
+    from modules.map_styles import EVENT_STYLES, ATTEMPT_COLORS
+
+    time_min = timeline_df["time"].min()
+    time_max = timeline_df["time"].max()
+
+    fig = go.Figure()
+
+    # --- Base timeline line ---
+    fig.add_trace(go.Scatter(
+        x=[time_min, time_max],
+        y=[0, 0],
+        mode="lines",
+        line=dict(color="gray", width=2),
+        hoverinfo="skip",
+        showlegend=False,
+    ))
+
+    # --- Attempt ranges as colored segments ---
+    attempts = sorted([a for a in timeline_df["attempt_number"].unique() if a != -1])
+    for j, attempt in enumerate(attempts):
+        mask = timeline_df[timeline_df["attempt_number"] == attempt]
+        t_start = mask["time"].min()
+        t_end = mask["time"].max()
+        color = ATTEMPT_COLORS[j % len(ATTEMPT_COLORS)]
+
+        fig.add_trace(go.Scatter(
+            x=[t_start, t_end],
+            y=[0, 0],
+            mode="lines",
+            line=dict(color=color, width=6),
+            name=f"Attempt {attempt}",
+            hovertext=f"Attempt {attempt}: {t_start:.1f}s – {t_end:.1f}s",
+            hoverinfo="text",
+        ))
+
+    # --- Event markers ---
+    for verb, style in EVENT_STYLES.items():
+        verb_df = game_events_df[game_events_df["verb"] == verb]
+        if verb_df.empty:
+            continue
+
+        fig.add_trace(go.Scatter(
+            x=verb_df["time"].tolist(),
+            y=[0] * len(verb_df),
+            mode="markers",
+            marker=dict(
+                color=style["color"],
+                size=style["size"],
+                symbol=style["symbol"],
+                line=dict(color="black", width=1),
+            ),
+            hovertext=[
+                f"{row['actor']} {row['verb']} {row['object']}<br>Time: {row['time']:.1f}s"
+                for _, row in verb_df.iterrows()
+            ],
+            hoverinfo="text",
+            name=style["label"],
+        ))
+
+    tick_vals = list(range(int(time_min), int(time_max) + 1, 30))
+    tick_labels = [
+        f"{int(t // 60)}:{int(t % 60):02d}<br>{int(t)}s"
+        for t in tick_vals
+    ]
+
+    # --- Layout: thin strip ---
+    fig.update_layout(
+        height=120,
+        margin=dict(l=10, r=10, t=10, b=40),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.0,
+            xanchor="left",
+            x=0,
+            font=dict(size=10),
+        ),
+        showlegend=True,
+        xaxis=dict(
+            range=[time_min - 2, time_max + 2],
+            showgrid=False,
+            zeroline=False,
+            tickvals=tick_vals,
+            ticktext=tick_labels,
+            tickfont=dict(size=10),
+        ),
+        yaxis=dict(
+            range=[-1, 1],
+            visible=False,
+            fixedrange=True,
+        ),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+    )
+
+    return fig

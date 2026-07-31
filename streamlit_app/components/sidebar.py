@@ -13,6 +13,8 @@ DEFAULTS = {
     "game_data": "defaults/example_game_data.json",
     "buildings": "defaults/example_buildings.json",
     "map_image": "defaults/example_map_level1.png",
+    "video": "defaults/example_gameplay.mp4",
+
 }
 
 
@@ -21,7 +23,7 @@ def render_sidebar():
     Render the sidebar and return all loaded data.
     Uses session_state to persist data across reruns.
     """
-    st.sidebar.title("Settings")
+    st.sidebar.title("Data Files")
 
     # --- Level selection ---
     level_name = st.sidebar.selectbox(
@@ -44,11 +46,15 @@ def render_sidebar():
     map_image_file = st.sidebar.file_uploader(
         "Map image", type=["png", "jpg"], key="map_upload"
     )
+    video_file = st.sidebar.file_uploader(
+        "Gameplay video", type=["mp4"], key="video_upload"
+    )
 
     # --- Load data (uploaded or defaults) ---
     game_data_path = _save_upload(game_file, "game_data.json") if game_file else DEFAULTS["game_data"]
     buildings_path = _save_upload(buildings_file, "buildings.json") if buildings_file else DEFAULTS["buildings"]
     map_image_path = _save_upload(map_image_file, "map_image.png") if map_image_file else DEFAULTS["map_image"]
+    video_path = _save_upload(video_file, "video.mp4") if video_file else DEFAULTS.get("video")
 
     # --- Process data ---
     game_data = get_game_data_dict(game_data_path)
@@ -62,6 +68,7 @@ def render_sidebar():
     return {
         "map_config": map_config,
         "map_image_path": map_image_path,
+        "video_path": video_path,
         "game_data": game_data,
         "buildings_df": buildings_df,
         "timeline_df": timeline_df,

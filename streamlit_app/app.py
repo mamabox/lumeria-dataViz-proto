@@ -8,11 +8,11 @@ st.set_page_config(
 )
 
 # --- Define pages ---
-home = st.Page("pages/home.py", title="Home", icon="🏠", default=True)
-static_map = st.Page("pages/static_map.py", title="Static Map", icon="🗺️")
-animated_map = st.Page("pages/animated_map.py", title="Animated Map", icon="▶️")
-video_sync = st.Page("pages/video_sync.py", title="Video + Animation", icon="🎬")
-about = st.Page("pages/about.py", title="About", icon="ℹ️")
+home = st.Page("pages/home.py", title="HOME", default=True)
+static_map = st.Page("pages/static_map.py", title="Static Map")
+animated_map = st.Page("pages/animated_map.py", title="Animated Map")
+video_sync = st.Page("pages/video_sync.py", title="Replay and Video")
+about = st.Page("pages/about.py", title="About")
 
 # --- Navigation ---
 nav = st.navigation([home, static_map, animated_map, video_sync, about])

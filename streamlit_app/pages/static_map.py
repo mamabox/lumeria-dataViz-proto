@@ -12,7 +12,7 @@ from modules.map_builder import build_static_figure
 data = render_sidebar()
 
 # --- Page content ---
-st.title("🗺️ Static Map")
+st.title("Static Map")
 
 # --- Build figure ---
 fig = build_static_figure(
