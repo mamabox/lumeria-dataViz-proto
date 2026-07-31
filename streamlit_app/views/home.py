@@ -30,19 +30,19 @@ st.markdown("---")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.markdown("**🗺️ Static Map**")
+    st.page_link("views/static_map.py", label="Static Map")
     st.caption("Full session at a glance — every position, event, and attempt on one map. Export as PNG.")
 
 with col2:
-    st.markdown("**▶️ Animated Map**")
+    st.page_link("views/animated_map.py", label="Animated Map")
     st.caption("Watch the session unfold in real time. Scrub, play at different speeds, export as MP4.")
 
 with col3:
-    st.markdown("**🎬 Video + Animation**")
+    st.page_link("views/video_sync.py", label="Replay and Video")
     st.caption("Compare the game replay side by side with gameplay video footage.")
 
 with col4:
-    st.markdown("**ℹ️ About**")
+    st.page_link("views/about.py", label="About")
     st.caption("Project context, credits, and links.")
 
 # --- Session summary ---

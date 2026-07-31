@@ -15,11 +15,11 @@ st.title("About")
 st.header("What is this?")
 
 st.markdown("""
-This tool replays and synthesizes a Luméria game session. Researchers can review the animation at different speeds, navigate freely through the timeline, and see the student's journey reconstructed — their movement through the virtual environment and the events they trigger.
+This tool replays and synthesizes a Luméria game session. Researchers can review the animation at different speeds, navigate freely through the timeline, and see the student's journey reconstructed — their movement in the virtual environment and the events they trigger.
 
-Existing tools in the DEEP Space project cover data analysis outside the game, video recordings, and transcriptions. But none of them retrace the gameplay experience itself. This tool fills that gap — not as a replacement for existing software, but as a missing piece in the analysis pipeline.
+Existing tools in the DEEP Space project cover data analysis outside the game, video recordings, and transcriptions. But none of them retrace the gameplay experience itself. This tool fills that gap — not as a replacement for existing software - but as a missing piece in the analysis pipeline.
 
-Rather than presuming what questions researchers will ask, the tool faithfully replays the experience and lets the researcher explore freely. It is not built to answer a specific question — it's built so the right questions can surface. It shows what happened. What to make of it is up to the researcher.
+Rather than presuming what questions researchers will ask, the tool  replays the experience. It is not built to answer a specific question but to show what happened. What to make of it is up to the researcher.
 """)
 
 # --- The Game ---
@@ -29,7 +29,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.markdown("""
-    Luméria is a collaborative educational game developed by [TECFA](https://tecfa.unige.ch/) (University of Geneva) as part of the DEEP Space research project.
+    Luméria is a collaborative educational game developed by [TECFA](https://tecfa.unige.ch/) (University of Geneva) as part of the [DEEP Space research project](https://tecfa.unige.ch/tecfa/research/deepspace/).
     
     Players navigate a medieval-inspired virtual city, working together to complete spatial orientation challenges on tablet and in VR.
     """)

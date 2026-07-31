@@ -38,9 +38,11 @@ class VideoPlayer:
     def get_frame_at_time(self, time_sec: float, offset: float = 0.0) -> np.ndarray | None:
         """
         Return RGB frame at a given time in seconds.
-        Offset shifts the time (e.g. video starts 10s before game).
+        Returns None if the time is outside the video duration.
         """
         frame_index = int((time_sec + offset) * self.fps)
+        if frame_index < 0 or frame_index >= self.total_frames:
+            return None
         return self.get_frame_at_index(frame_index)
 
     def get_metadata(self) -> dict:
