@@ -146,6 +146,6 @@ game_time = time_list[frame_index]
 st.caption(f"Game Time: {game_time:.2f}s | Video Time: {game_time + offset:.2f}s")
 frame_rgb = player.get_frame_at_time(game_time, offset=offset)
 if frame_rgb is not None:
-    st.image(frame_rgb)
+    st.image(frame_rgb, width=800)
 else:
     st.warning("No frame available at this time")
