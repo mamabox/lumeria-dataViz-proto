@@ -25,7 +25,9 @@ def get_all_sessions(db) -> list[dict]:
     Fetch all documents from game_saves collection.
     Returns a list of metadata dicts (without gameData).
     """
-    docs = db.collection("game_saves").stream()
+    docs = db.collection("game_saves").order_by(
+        "startTime", direction=firestore.Query.DESCENDING
+    ).stream()
 
     sessions = []
     for doc in docs:

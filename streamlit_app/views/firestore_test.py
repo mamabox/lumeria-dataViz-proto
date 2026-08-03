@@ -5,6 +5,7 @@ from modules.map_config import get_map_config, LEVELS
 from modules.map_config import get_map_config, LEVELS
 from modules.data_loader import get_buildings_df
 from components.sidebar import DEFAULTS
+from datetime import datetime as dt
 
 import streamlit as st
 
@@ -63,7 +64,7 @@ col_a, col_b, col_c = st.columns(3)
 
 with col_a:
     st.caption("Start Time")
-    st.write(raw_data["startTime"])
+    st.write(dt.fromisoformat(raw_data["startTime"]).strftime("%Y-%m-%d %H:%M"))
 
 with col_b:
     st.caption("Player ID")
