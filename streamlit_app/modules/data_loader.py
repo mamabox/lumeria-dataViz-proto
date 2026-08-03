@@ -12,29 +12,12 @@ from datetime import datetime
 
 # ======================== LOADING ======================== #
 
-def get_game_data_dict(file_path: str) -> dict:
+def get_game_data_dict_from_dict(data: dict) -> dict:
     """
-    Load the main game JSON and return a dict of dataframes + metadata.
-
-    Returns: {
-        "player_id": player_id,
-        "start_time": start_time,
-        "save_time": save_time,
-        "device_name": device_name,
-        "player_movement_df": player_movement_df,
-        "challenge_df": challenge_df,
-        "game_events_df": game_events_df,
-        "validations_df": validations_df,
-        "challenge_id": challenge_id,
-        "challenge_duration": challenge_duration,
-    }
-
+    Parse a game data dict into dataframes + metadata.
+    Works for both file uploads and Firestore data.
     """
-    with open(file_path, mode="r") as f:
-        data = json.load(f)
-
     # --- Metadata ---
-    player_id = data["playerId"]
     player_id = data["playerId"]
     start_time = datetime.fromisoformat(data["startTime"])
     save_time = datetime.fromisoformat(data["saveTime"])
@@ -72,11 +55,9 @@ def get_game_data_dict(file_path: str) -> dict:
         for entry in challenge["attemptsList"]
     ])
 
-    # Keep only last row per attempt (drop "started", keep "ended")
     challenge_df = challenge_df.drop_duplicates(
         subset=["attempt_number"], keep="last"
     )
-    # Replace 0 duration with NaN
     challenge_df["attempt_duration"] = challenge_df["attempt_duration"].replace(0, np.nan)
 
     # --- Game events ---
@@ -116,6 +97,14 @@ def get_game_data_dict(file_path: str) -> dict:
         "challenge_duration": challenge_duration,
     }
 
+def get_game_data_dict(file_path: str) -> dict:
+    """
+    Load game JSON from file and parse into dataframes + metadata.
+    """
+    with open(file_path, mode="r") as f:
+        data = json.load(f)
+
+    return get_game_data_dict_from_dict(data)
 
 def get_buildings_df(file_path: str) -> pd.DataFrame:
     """

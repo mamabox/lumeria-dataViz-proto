@@ -3,6 +3,7 @@ Test page — load game data from Firestore.
 """
 
 import streamlit as st
+from modules.data_loader import get_game_data_dict_from_dict
 from modules.firestore_client import (
     get_firestore_client,
     get_all_sessions,
@@ -44,7 +45,13 @@ if st.button("Load session"):
     raw_data = get_session_game_data(db, selected_id)
 
     if raw_data:
+        st.json(raw_data.keys())
+        st.json(list(raw_data.get("challengesSaveObject", {}).keys()))
+        st.json(raw_data["challengesSaveObject"])
+        game_data = get_game_data_dict_from_dict(raw_data)
         st.success(f"Loaded: {selected_id}")
-        st.json(raw_data)
+        st.metric("Player ID", game_data["player_id"])
+        st.metric("Data Points", len(game_data["player_movement_df"]))
+        st.dataframe(game_data["player_movement_df"].head(10))
     else:
         st.error(f"No data found for {selected_id}")
