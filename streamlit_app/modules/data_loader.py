@@ -62,27 +62,35 @@ def get_game_data_dict_from_dict(data: dict) -> dict:
 
     # --- Game events ---
     events_list = data["gameEventsManagerSaveObject"]["gameEventsList"]
-    game_events_df = pd.DataFrame([
-        {
-            "time": entry["timer"],
-            "actor": entry["eventActor"],
-            "verb": entry["eventVerb"],
-            "object": entry["eventObject"],
-        }
-        for entry in events_list
-    ]).reset_index(drop=True)
+    if events_list:
+        game_events_df = pd.DataFrame([
+            {
+                "time": entry["timer"],
+                "actor": entry["eventActor"],
+                "verb": entry["eventVerb"],
+                "object": entry["eventObject"],
+            }
+            for entry in events_list
+        ]).reset_index(drop=True)
+    else:
+        # When no game events
+        game_events_df = pd.DataFrame(columns=["time", "actor", "verb", "object"])
 
     # --- Validations ---
     validations_list = data["validationManagerSaveObject"]["playerValidationsList"]
-    validations_df = pd.DataFrame([
-        {
-            "time": entry["gameTimer"],
-            "validation": entry["playerValidationSaveObject"]["validation"],
-            "position_correct": entry["playerValidationSaveObject"]["isPositionCorrect"],
-            "orientation_correct": entry["playerValidationSaveObject"]["isOrientationCorrect"],
-        }
-        for entry in validations_list
-    ])
+    if validations_list:
+        validations_df = pd.DataFrame([
+            {
+                "time": entry["gameTimer"],
+                "validation": entry["playerValidationSaveObject"]["validation"],
+                "position_correct": entry["playerValidationSaveObject"]["isPositionCorrect"],
+                "orientation_correct": entry["playerValidationSaveObject"]["isOrientationCorrect"],
+            }
+            for entry in validations_list
+        ])
+    else:
+        # When not validation
+        validations_df = pd.DataFrame(columns=["time", "validation", "position_correct", "orientation_correct"])
 
     return {
         "player_id": player_id,

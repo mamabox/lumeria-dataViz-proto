@@ -73,6 +73,20 @@ def render_sidebar():
         st.session_state["video_path"] = _save_upload(video_file, "video.mp4")
         st.session_state.pop("video_player", None)
 
+    # --- Reset ---
+    st.sidebar.markdown("---")
+    if st.sidebar.button("Reset to example data"):
+        st.session_state.pop("game_data_path", None)
+        st.session_state.pop("buildings_path", None)
+        st.session_state.pop("map_image_path", None)
+        st.session_state.pop("video_path", None)
+        st.session_state.pop("loaded_data", None)
+        st.session_state.pop("snapshots", None)
+        st.session_state.pop("animated_fig", None)
+        st.session_state.pop("video_player", None)
+        st.rerun()
+
+
     # --- Resolve paths (uploaded or defaults) ---
     game_data_path = st.session_state.get("game_data_path", DEFAULTS["game_data"])
     buildings_path = st.session_state.get("buildings_path", DEFAULTS["buildings"])
