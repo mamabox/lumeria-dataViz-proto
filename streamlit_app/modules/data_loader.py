@@ -16,24 +16,29 @@ def get_game_data_dict(file_path: str) -> dict:
     """
     Load the main game JSON and return a dict of dataframes + metadata.
 
-    Returns:
-        {
-            "player_id": str,
-            "save_time": datetime,
-            "player_movement_df": DataFrame,
-            "challenge_df": DataFrame,
-            "game_events_df": DataFrame,
-            "validations_df": DataFrame,
-            "challenge_id": int,
-            "challenge_duration": float,
-        }
+    Returns: {
+        "player_id": player_id,
+        "start_time": start_time,
+        "save_time": save_time,
+        "device_name": device_name,
+        "player_movement_df": player_movement_df,
+        "challenge_df": challenge_df,
+        "game_events_df": game_events_df,
+        "validations_df": validations_df,
+        "challenge_id": challenge_id,
+        "challenge_duration": challenge_duration,
+    }
+
     """
     with open(file_path, mode="r") as f:
         data = json.load(f)
 
     # --- Metadata ---
     player_id = data["playerId"]
-    save_time = datetime.strptime(data["saveDateTime"], "%Y-%m-%d %H:%M:%S")
+    player_id = data["playerId"]
+    start_time = datetime.fromisoformat(data["startTime"])
+    save_time = datetime.fromisoformat(data["saveTime"])
+    device_name = data["deviceName"]
 
     # --- Player movement ---
     movement_list = (
@@ -100,7 +105,9 @@ def get_game_data_dict(file_path: str) -> dict:
 
     return {
         "player_id": player_id,
+        "start_time": start_time,
         "save_time": save_time,
+        "device_name": device_name,
         "player_movement_df": player_movement_df,
         "challenge_df": challenge_df,
         "game_events_df": game_events_df,
