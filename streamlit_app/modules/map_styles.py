@@ -7,7 +7,7 @@ Change values here → updates everywhere (static, animated, video sync).
 
 # --- Trail ---
 TRAIL_COLOR = "white"
-TRAIL_SIZE = 5
+TRAIL_SIZE = 6
 TRAIL_OPACITY = 0.25
 
 # --- Player (current position) ---
@@ -17,14 +17,14 @@ PLAYER_OUTLINE_COLOR = "black"
 PLAYER_OUTLINE_WIDTH = 2
 
 # --- Rotation triangle ---
-TRIANGLE_SIZE = 6
+TRIANGLE_SIZE = 7
 TRIANGLE_FILL = "mediumseagreen"
 TRIANGLE_OUTLINE_COLOR = "black"
 TRIANGLE_OUTLINE_WIDTH = 1.5
 TRIANGLE_MODE = "lines"
 
 # --- Attempt paths ---
-ATTEMPT_MARKER_SIZE = 4
+ATTEMPT_MARKER_SIZE = 6
 ATTEMPT_LINE_WIDTH = 2
 ATTEMPT_OPACITY = 0.8
 ATTEMPT_COLORS = [

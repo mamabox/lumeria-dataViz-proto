@@ -22,11 +22,7 @@ if os.path.exists(os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")):
     DEFAULTS["video"] = os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")
 
 def render_sidebar():
-    """
-    Render the sidebar and return all loaded data.
-    Uses session_state to persist data across reruns.
-    """
-    st.sidebar.title("Data Files")
+    st.sidebar.title("Settings")
 
     # --- Level selection ---
     level_name = st.sidebar.selectbox(
@@ -53,30 +49,61 @@ def render_sidebar():
         "Gameplay video", type=["mp4"], key="video_upload"
     )
 
-    # --- Load data (uploaded or defaults) ---
-    game_data_path = _save_upload(game_file, "game_data.json") if game_file else DEFAULTS["game_data"]
-    buildings_path = _save_upload(buildings_file, "buildings.json") if buildings_file else DEFAULTS["buildings"]
-    map_image_path = _save_upload(map_image_file, "map_image.png") if map_image_file else DEFAULTS["map_image"]
-    video_path = _save_upload(video_file, "video.mp4") if video_file else DEFAULTS.get("video")
+    # --- Process uploads into session state ---
+    if game_file:
+        st.session_state["game_data_path"] = _save_upload(game_file, "game_data.json")
+        # Clear cached data so it reloads
+        st.session_state.pop("loaded_data", None)
+        st.session_state.pop("snapshots", None)
+        st.session_state.pop("animated_fig", None)
 
-    # --- Process data ---
-    game_data = get_game_data_dict(game_data_path)
-    buildings_df = get_buildings_df(buildings_path)
-    timeline_df = get_player_timeline_df(
-        game_data["player_movement_df"],
-        game_data["challenge_df"],
-    )
-    target_building_id = game_data["challenge_df"].iloc[0]["target_building_id"]
+    if buildings_file:
+        st.session_state["buildings_path"] = _save_upload(buildings_file, "buildings.json")
+        st.session_state.pop("loaded_data", None)
+        st.session_state.pop("snapshots", None)
+        st.session_state.pop("animated_fig", None)
 
-    return {
-        "map_config": map_config,
-        "map_image_path": map_image_path,
-        "video_path": video_path,
-        "game_data": game_data,
-        "buildings_df": buildings_df,
-        "timeline_df": timeline_df,
-        "target_building_id": target_building_id,
-    }
+    if map_image_file:
+        st.session_state["map_image_path"] = _save_upload(map_image_file, "map_image.png")
+        st.session_state.pop("loaded_data", None)
+        st.session_state.pop("snapshots", None)
+        st.session_state.pop("animated_fig", None)
+
+    if video_file:
+        st.session_state["video_path"] = _save_upload(video_file, "video.mp4")
+        st.session_state.pop("video_player", None)
+
+    # --- Resolve paths (uploaded or defaults) ---
+    game_data_path = st.session_state.get("game_data_path", DEFAULTS["game_data"])
+    buildings_path = st.session_state.get("buildings_path", DEFAULTS["buildings"])
+    map_image_path = st.session_state.get("map_image_path", DEFAULTS["map_image"])
+    video_path = st.session_state.get("video_path", DEFAULTS.get("video"))
+
+    # --- Load data (cached in session state) ---
+    if "loaded_data" not in st.session_state:
+        game_data = get_game_data_dict(game_data_path)
+        buildings_df = get_buildings_df(buildings_path)
+        timeline_df = get_player_timeline_df(
+            game_data["player_movement_df"],
+            game_data["challenge_df"],
+        )
+        target_building_id = game_data["challenge_df"].iloc[0]["target_building_id"]
+
+        st.session_state["loaded_data"] = {
+            "map_config": map_config,
+            "map_image_path": map_image_path,
+            "video_path": video_path,
+            "game_data": game_data,
+            "buildings_df": buildings_df,
+            "timeline_df": timeline_df,
+            "target_building_id": target_building_id,
+        }
+
+    # Update paths that might change without reloading data
+    st.session_state["loaded_data"]["map_image_path"] = map_image_path
+    st.session_state["loaded_data"]["video_path"] = video_path
+
+    return st.session_state["loaded_data"]
 
 
 def _save_upload(uploaded_file, filename: str) -> str:
