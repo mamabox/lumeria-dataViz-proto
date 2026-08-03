@@ -74,17 +74,17 @@ with col_e:
 # --- Data preview ---
 with st.expander("📊 Data Preview"):
     tab1, tab2, tab3, tab4 = st.tabs([
-        "Player Movement", "Challenges", "Game Events", "Validations"
+        "Challenges", "Game Events", "Validations", "Player Movement",
     ])
 
     with tab1:
-        st.dataframe(data["timeline_df"].head(10), width="stretch")
-
-    with tab2:
         st.dataframe(data["game_data"]["challenge_df"], width="stretch")
 
-    with tab3:
+    with tab2:
         st.dataframe(data["game_data"]["game_events_df"], width="stretch")
 
-    with tab4:
+    with tab3:
         st.dataframe(data["game_data"]["validations_df"], width="stretch")
+
+    with tab4:
+        st.dataframe(data["timeline_df"].head(10), width="stretch")

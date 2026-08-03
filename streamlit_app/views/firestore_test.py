@@ -44,14 +44,24 @@ selected_id = st.selectbox(
 if st.button("Load session"):
     raw_data = get_session_game_data(db, selected_id)
 
-    if raw_data:
-        st.json(raw_data.keys())
-        st.json(list(raw_data.get("challengesSaveObject", {}).keys()))
-        st.json(raw_data["challengesSaveObject"])
+    if not raw_data:
+         st.error(f"No data found for {selected_id}")
+    else:
         game_data = get_game_data_dict_from_dict(raw_data)
         st.success(f"Loaded: {selected_id}")
-        st.metric("Player ID", game_data["player_id"])
-        st.metric("Data Points", len(game_data["player_movement_df"]))
-        st.dataframe(game_data["player_movement_df"].head(10))
-    else:
-        st.error(f"No data found for {selected_id}")
+
+
+                # --- Data preview ---
+    with st.expander("📊 Data Preview"):
+        tab1, tab2, tab3 = st.tabs([
+            "Challenges", "Game Events", "Validations"
+        ])
+
+        with tab1:
+            st.dataframe(game_data["challenge_df"], width="stretch")
+
+        with tab2:
+            st.dataframe(game_data["game_events_df"], width="stretch")
+
+        with tab3:
+            st.dataframe(game_data["validations_df"], width="stretch")
