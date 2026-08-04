@@ -30,6 +30,7 @@ def render_sidebar():
         options=list(LEVELS.keys()),
         index=0,
     )
+    #level_name = "level_1"
     map_config = get_map_config(**LEVELS[level_name])
 
     # --- File uploads ---
