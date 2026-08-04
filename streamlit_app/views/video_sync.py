@@ -12,6 +12,8 @@ from modules.map_builder import build_base_figure
 from modules.map_animation import build_animated_figure, get_frame_snapshot
 from modules.map_builder import build_event_timeline
 from modules.video_exporter import export_combined_video
+from modules.video_exporter_pipe import export_combined_video_pipe
+
 import tempfile
 import os
 
@@ -198,3 +200,64 @@ if st.session_state.get("export_done") and os.path.exists(OUTPUT_PATH):
     st.video(OUTPUT_PATH)
     with open(OUTPUT_PATH, "rb") as f:
         st.download_button("Download combined video", f.read(), "combined.mp4")
+
+
+OUTPUT_PATH_PNG = "/tmp/lumeria_combined.mp4"
+OUTPUT_PATH_PIPE = "/tmp/lumeria_combined_pipe.mp4"
+
+col_png, col_pipe = st.columns(2)
+
+with col_png:
+    if st.button("Export (PNG method)"):
+        progress = st.progress(0, text="Exporting (PNG)...")
+        def update_png(current, total):
+            progress.progress(current / total, text=f"PNG: {current}/{total}")
+        try:
+            import time
+            start = time.time()
+            export_combined_video(
+                animated_fig=st.session_state["animated_fig"],
+                video_path=data["video_path"],
+                timeline_df=data["timeline_df"],
+                output_path=OUTPUT_PATH_PNG,
+                offset=offset,
+                speed=speed,
+                on_progress=update_png,
+            )
+            st.session_state["export_png_time"] = time.time() - start
+            st.session_state["export_png_done"] = True
+        except Exception as e:
+            st.error(f"PNG export failed: {e}")
+
+with col_pipe:
+    if st.button("Export (Pipe method)"):
+        progress = st.progress(0, text="Exporting (Pipe)...")
+        def update_pipe(current, total):
+            progress.progress(current / total, text=f"Pipe: {current}/{total}")
+        try:
+            import time
+            start = time.time()
+            export_combined_video_pipe(
+                animated_fig=st.session_state["animated_fig"],
+                video_path=data["video_path"],
+                timeline_df=data["timeline_df"],
+                output_path=OUTPUT_PATH_PIPE,
+                offset=offset,
+                speed=speed,
+                on_progress=update_pipe,
+            )
+            st.session_state["export_pipe_time"] = time.time() - start
+            st.session_state["export_pipe_done"] = True
+        except Exception as e:
+            st.error(f"Pipe export failed: {e}")
+
+# Results — persist across reruns
+if st.session_state.get("export_png_done") and os.path.exists(OUTPUT_PATH_PNG):
+    size = os.path.getsize(OUTPUT_PATH_PNG) / (1024 * 1024)
+    st.success(f"PNG method: {st.session_state['export_png_time']:.1f}s | {size:.1f} MB")
+    st.video(OUTPUT_PATH_PNG)
+
+if st.session_state.get("export_pipe_done") and os.path.exists(OUTPUT_PATH_PIPE):
+    size = os.path.getsize(OUTPUT_PATH_PIPE) / (1024 * 1024)
+    st.success(f"Pipe method: {st.session_state['export_pipe_time']:.1f}s | {size:.1f} MB")
+    st.video(OUTPUT_PATH_PIPE)
