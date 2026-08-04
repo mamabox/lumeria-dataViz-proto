@@ -8,16 +8,34 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 
+class FirestoreConnectionError(Exception):
+    """Raised when Firestore credentials are missing or invalid."""
+
+
 def get_firestore_client(creds_path: str = None):
+    """
+    Initialize Firebase and return a Firestore client.
+    Tries Streamlit secrets first (cloud deployment), falls back to a local
+    credentials file. Raises FirestoreConnectionError if neither works.
+    """
     if not firebase_admin._apps:
         try:
             import streamlit as st
             creds_dict = json.loads(st.secrets["firebase"]["credentials"])
             cred = credentials.Certificate(creds_dict)
         except Exception:
-            cred = credentials.Certificate(creds_path)
+            try:
+                cred = credentials.Certificate(creds_path)
+            except Exception as e:
+                raise FirestoreConnectionError(
+                    f"Could not load Firestore credentials from {creds_path} "
+                    f"or Streamlit secrets: {e}"
+                ) from e
 
-        firebase_admin.initialize_app(cred)
+        try:
+            firebase_admin.initialize_app(cred)
+        except Exception as e:
+            raise FirestoreConnectionError(f"Could not initialize Firebase: {e}") from e
 
     return firestore.client()
 

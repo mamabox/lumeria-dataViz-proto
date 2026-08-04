@@ -29,6 +29,8 @@ def export_animation_to_mp4(
 
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    if not writer.isOpened():
+        raise RuntimeError(f"Could not open video writer for: {output_path}")
 
     for i, frame in enumerate(fig.frames):
 

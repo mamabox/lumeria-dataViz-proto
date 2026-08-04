@@ -223,8 +223,6 @@ def build_frames(
 # ======================== HELPER ======================== #
 
 def get_frame_snapshot(fig: go.Figure, frame_index: int) -> go.Figure:
-    import plotly.graph_objects as go
-
     frame = fig.frames[frame_index]
     base_data = [trace.to_plotly_json() for trace in fig.data]
 

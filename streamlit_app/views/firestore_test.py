@@ -16,6 +16,7 @@ from modules.firestore_client import (
     get_firestore_client,
     get_all_sessions,
     get_session_game_data,
+    FirestoreConnectionError,
 )
 
 
@@ -25,7 +26,11 @@ CREDS_PATH = "secrets/firestore-creds.json"
 st.title("Firestore Test")
 
 # --- Connect ---
-db = get_firestore_client(CREDS_PATH)
+try:
+    db = get_firestore_client(CREDS_PATH)
+except FirestoreConnectionError as e:
+    st.error(str(e))
+    st.stop()
 
 # --- List sessions ---
 sessions = get_all_sessions(db)
@@ -42,7 +47,6 @@ session_labels = {
     for s in sessions
 }
 
-#st.subheader("Select a session")
 selected_id = st.selectbox(
     "Select a session",
     options=session_labels.keys(),
@@ -55,8 +59,6 @@ raw_data = get_session_game_data(db, selected_id)
 if not raw_data:
         st.error(f"No data found for {selected_id}")
         st.stop()
-
-#st.subheader("Preview")
 
 col_a, col_b, col_c = st.columns(3)
 
