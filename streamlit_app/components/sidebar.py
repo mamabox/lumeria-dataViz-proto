@@ -1,5 +1,5 @@
 """
-Sidebar UI — file uploads, level selection, shared settings.
+Sidebar UI — file uploads, shared settings.
 This is the only place users interact with data loading.
 """
 
@@ -22,19 +22,19 @@ if os.path.exists(os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")):
     DEFAULTS["video"] = os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")
 
 def render_sidebar():
-    st.sidebar.title("Settings")
+    #st.sidebar.title("Settings")
 
     # --- Level selection ---
-    level_name = st.sidebar.selectbox(
-        "Level",
-        options=list(LEVELS.keys()),
-        index=0,
-    )
+    # level_name = st.sidebar.selectbox(
+    #     "Level",
+    #     options=list(LEVELS.keys()),
+    #     index=0,
+    # )
     #level_name = "level_1"
-    map_config = get_map_config(**LEVELS[level_name])
+    #map_config = get_map_config(**LEVELS[level_name])
 
     # --- File uploads ---
-    st.sidebar.markdown("---")
+    #st.sidebar.markdown("---")
     st.sidebar.subheader("Data Files")
 
     game_file = st.sidebar.file_uploader(
@@ -97,6 +97,7 @@ def render_sidebar():
     # --- Load data (cached in session state) ---
     if "loaded_data" not in st.session_state:
         game_data = get_game_data_dict(game_data_path)
+        map_config = get_map_config(**LEVELS[f"level_{game_data["level_number"]}"])
         buildings_df = get_buildings_df(buildings_path)
         timeline_df = get_player_timeline_df(
             game_data["player_movement_df"],

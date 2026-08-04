@@ -74,7 +74,6 @@ with col_c:
     st.caption("Device Name")
     st.write(raw_data["deviceName"])
 
-
 # --- Data preview ---
 with st.expander("📊 Data Preview", expanded=True):
     game_data = get_game_data_dict_from_dict(raw_data)

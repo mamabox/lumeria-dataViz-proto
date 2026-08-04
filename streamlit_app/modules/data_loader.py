@@ -40,9 +40,10 @@ def get_game_data_dict_from_dict(data: dict) -> dict:
     ])
 
     # --- Challenge / attempts ---
-    challenge = data["challengesSaveObject"]["challengesList"][0]
-    challenge_id = challenge["challengeId"]
-    challenge_duration = float(challenge["challengeDuration"])
+    challenge_list = data["challengesSaveObject"]["challengesList"][0]
+    level_number: str = challenge_list["levelNumber"]
+    challenge_id = challenge_list["challengeId"]
+    challenge_duration = float(challenge_list["challengeDuration"])
 
     challenge_df = pd.DataFrame([
         {
@@ -52,7 +53,7 @@ def get_game_data_dict_from_dict(data: dict) -> dict:
             "attempt_duration": float(entry["attemptDuration"]),
             "target_building_id": entry["targetBuildingId"],
         }
-        for entry in challenge["attemptsList"]
+        for entry in challenge_list["attemptsList"]
     ])
 
     challenge_df = challenge_df.drop_duplicates(
@@ -101,6 +102,7 @@ def get_game_data_dict_from_dict(data: dict) -> dict:
         "challenge_df": challenge_df,
         "game_events_df": game_events_df,
         "validations_df": validations_df,
+        "level_number": level_number,
         "challenge_id": challenge_id,
         "challenge_duration": challenge_duration,
     }

@@ -49,7 +49,7 @@ with col4:
 st.markdown("---")
 st.subheader("Current Session")
 
-col_a, col_b, col_c, col_d, col_e = st.columns(5)
+col_a, col_f, col_b, col_c, col_d, col_e = st.columns(6)
 
 with col_a:
     st.caption("Player")
@@ -68,13 +68,17 @@ with col_d:
     st.write(len(data["timeline_df"]))
 
 with col_e:
-    st.caption("Recorded")
+    st.caption("Save Time")
     st.write(data["game_data"]["save_time"].strftime("%Y-%m-%d %H:%M"))
 
+with col_f:
+    st.caption("Level")
+    st.write(data["game_data"]["level_number"])
+
 # --- Data preview ---
-with st.expander("📊 Data Preview"):
+with st.expander("📊 Data Preview", expanded=True):
     tab1, tab2, tab3, tab4 = st.tabs([
-        "Challenges", "Game Events", "Validations", "Player Movement",
+        "Attempts", "Game Events", "Validations", "Player Movement",
     ])
 
     with tab1:
