@@ -5,10 +5,11 @@ This is the only place users interact with data loading.
 
 import streamlit as st
 import os
-from modules.data_loader import get_game_data_dict, get_loaded_data
+from modules.data_loader import get_game_data_dict, get_loaded_data, GameDataError
 
 # Get the directory where sidebar.py lives (streamlit_app/components/)
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMP_DIR:str = os.path.join(_BASE_DIR, "temp_uploads")
 
 # Default file paths (relative to streamlit_app/)
 # Note: buildings and map image aren't uploadable — buildings.json is one
@@ -75,7 +76,11 @@ def render_sidebar():
 
     # --- Load data (cached in session state) ---
     if "loaded_data" not in st.session_state:
-        game_data = get_game_data_dict(game_data_path)
+        try:
+            game_data = get_game_data_dict(game_data_path)
+        except GameDataError as e:
+            st.sidebar.error(str(e))
+            st.stop()
         # map_image_path=None — not uploadable, get_loaded_data() resolves
         # the level-appropriate default.
         st.session_state["loaded_data"] = get_loaded_data(
@@ -90,9 +95,9 @@ def _save_upload(uploaded_file, filename: str) -> str:
     Save an uploaded file to a temp location and return the path.
     Streamlit uploads are bytes — we need a file path for json and cv2.
     """
-    temp_dir = "temp_uploads"
-    os.makedirs(temp_dir, exist_ok=True)
-    path = os.path.join(temp_dir, filename)
+
+    os.makedirs(TEMP_DIR, exist_ok=True)
+    path = os.path.join(TEMP_DIR, filename)
     with open(path, "wb") as f:
         f.write(uploaded_file.getbuffer())
     return path

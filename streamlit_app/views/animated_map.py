@@ -7,7 +7,7 @@ from components.sidebar import render_sidebar
 from components.export import csv_download_button
 from modules.map_builder import build_base_figure
 from modules.map_animation import build_animated_figure
-from modules.data_export import export_animation_to_mp4
+from modules.animation_exporter import export_animation_to_mp4
 
 
 # --- Load data via sidebar ---
@@ -48,18 +48,20 @@ with col1:
     export_fps = int(speed.replace("x", ""))
 
     if st.button("🎬 Export MP4"):
-      st.warning("⚠️ Don't navigate away — export will be cancelled.")
-      with st.spinner('Rendering frames... "Patience Iago, patience."'):
-         video_bytes = export_animation_to_mp4(fig, fps=export_fps)
-         st.session_state["exported_video"] = video_bytes
+        st.warning("⚠️ Don't navigate away — export will be cancelled.")
+        with st.spinner('Rendering frames... "Patience Iago, patience."'):
+            try:
+                st.session_state["exported_video"] = export_animation_to_mp4(fig, fps=export_fps)
+            except Exception as e:
+                st.error(f"Export failed: {e}")
 
     if "exported_video" in st.session_state:
-         st.download_button(
-               label="💾 Download MP4",
-               data=video_bytes,
-               file_name="animation.mp4",
-               mime="video/mp4",
-         )
+        st.download_button(
+            label="💾 Download MP4",
+            data=st.session_state["exported_video"],
+            file_name="animation.mp4",
+            mime="video/mp4",
+        )
 
 with col2:
     csv_download_button(

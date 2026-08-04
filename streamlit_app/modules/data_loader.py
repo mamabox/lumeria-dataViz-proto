@@ -19,109 +19,123 @@ _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _BUILDINGS_PATH = os.path.join(_BASE_DIR, "defaults", "example_buildings.json")
 
 
+class GameDataError(Exception):
+    """Raised when game data JSON can't be loaded or doesn't match the expected shape."""
+
+
 # ======================== LOADING ======================== #
 
 def get_game_data_dict_from_dict(data: dict) -> dict:
     """
     Parse a game data dict into dataframes + metadata.
     Works for both file uploads and Firestore data.
+    Raises GameDataError if required fields are missing or malformed.
     """
-    # --- Metadata ---
-    player_id = data["playerId"]
-    start_time = datetime.fromisoformat(data["startTime"])
-    save_time = datetime.fromisoformat(data["saveTime"])
-    device_name = data["deviceName"]
+    try:
+        # --- Metadata ---
+        player_id = data["playerId"]
+        start_time = datetime.fromisoformat(data["startTime"])
+        save_time = datetime.fromisoformat(data["saveTime"])
+        device_name = data["deviceName"]
 
-    # --- Player movement ---
-    movement_list = (
-        data["playerSaveObject"]
-            ["playerMovementSaveObject"]
-            ["playerMovementInfoList"]
-    )
-    player_movement_df = pd.DataFrame([
-        {
-            "time": entry["gameTime"],
-            "pos_x": entry["position"]["x"],
-            "pos_z": entry["position"]["z"],
-            "rot_y": entry["rotation"]["y"],
-        }
-        for entry in movement_list
-    ])
-
-    # --- Challenge / attempts ---
-    challenge_list = data["challengesSaveObject"]["challengesList"][0]
-    level_number: str = challenge_list["levelNumber"]
-    challenge_id = challenge_list["challengeId"]
-    challenge_duration = float(challenge_list["challengeDuration"])
-
-    challenge_df = pd.DataFrame([
-        {
-            "start_time": float(entry["startTime"]),
-            "attempt_number": entry["attemptNumber"],
-            "attempt_state": entry["state"],
-            "attempt_duration": float(entry["attemptDuration"]),
-            "target_building_id": entry["targetBuildingId"],
-        }
-        for entry in challenge_list["attemptsList"]
-    ])
-
-    challenge_df = challenge_df.drop_duplicates(
-        subset=["attempt_number"], keep="last"
-    )
-    challenge_df["attempt_duration"] = challenge_df["attempt_duration"].replace(0, np.nan)
-
-    # --- Game events ---
-    events_list = data["gameEventsManagerSaveObject"]["gameEventsList"]
-    if events_list:
-        game_events_df = pd.DataFrame([
+        # --- Player movement ---
+        movement_list = (
+            data["playerSaveObject"]
+                ["playerMovementSaveObject"]
+                ["playerMovementInfoList"]
+        )
+        player_movement_df = pd.DataFrame([
             {
-                "time": entry["timer"],
-                "actor": entry["eventActor"],
-                "verb": entry["eventVerb"],
-                "object": entry["eventObject"],
+                "time": entry["gameTime"],
+                "pos_x": entry["position"]["x"],
+                "pos_z": entry["position"]["z"],
+                "rot_y": entry["rotation"]["y"],
             }
-            for entry in events_list
-        ]).reset_index(drop=True)
-    else:
-        # When no game events
-        game_events_df = pd.DataFrame(columns=["time", "actor", "verb", "object"])
-
-    # --- Validations ---
-    validations_list = data["validationManagerSaveObject"]["playerValidationsList"]
-    if validations_list:
-        validations_df = pd.DataFrame([
-            {
-                "time": entry["gameTimer"],
-                "validation": entry["playerValidationSaveObject"]["validation"],
-                "position_correct": entry["playerValidationSaveObject"]["isPositionCorrect"],
-                "orientation_correct": entry["playerValidationSaveObject"]["isOrientationCorrect"],
-            }
-            for entry in validations_list
+            for entry in movement_list
         ])
-    else:
-        # When not validation
-        validations_df = pd.DataFrame(columns=["time", "validation", "position_correct", "orientation_correct"])
 
-    return {
-        "player_id": player_id,
-        "start_time": start_time,
-        "save_time": save_time,
-        "device_name": device_name,
-        "player_movement_df": player_movement_df,
-        "challenge_df": challenge_df,
-        "game_events_df": game_events_df,
-        "validations_df": validations_df,
-        "level_number": level_number,
-        "challenge_id": challenge_id,
-        "challenge_duration": challenge_duration,
-    }
+        # --- Challenge / attempts ---
+        challenge_list = data["challengesSaveObject"]["challengesList"][0]
+        level_number: str = challenge_list["levelNumber"]
+        challenge_id = challenge_list["challengeId"]
+        challenge_duration = float(challenge_list["challengeDuration"])
+
+        challenge_df = pd.DataFrame([
+            {
+                "start_time": float(entry["startTime"]),
+                "attempt_number": entry["attemptNumber"],
+                "attempt_state": entry["state"],
+                "attempt_duration": float(entry["attemptDuration"]),
+                "target_building_id": entry["targetBuildingId"],
+            }
+            for entry in challenge_list["attemptsList"]
+        ])
+
+        challenge_df = challenge_df.drop_duplicates(
+            subset=["attempt_number"], keep="last"
+        )
+        challenge_df["attempt_duration"] = challenge_df["attempt_duration"].replace(0, np.nan)
+
+        # --- Game events ---
+        events_list = data["gameEventsManagerSaveObject"]["gameEventsList"]
+        if events_list:
+            game_events_df = pd.DataFrame([
+                {
+                    "time": entry["timer"],
+                    "actor": entry["eventActor"],
+                    "verb": entry["eventVerb"],
+                    "object": entry["eventObject"],
+                }
+                for entry in events_list
+            ]).reset_index(drop=True)
+        else:
+            # When no game events
+            game_events_df = pd.DataFrame(columns=["time", "actor", "verb", "object"])
+
+        # --- Validations ---
+        validations_list = data["validationManagerSaveObject"]["playerValidationsList"]
+        if validations_list:
+            validations_df = pd.DataFrame([
+                {
+                    "time": entry["gameTimer"],
+                    "validation": entry["playerValidationSaveObject"]["validation"],
+                    "position_correct": entry["playerValidationSaveObject"]["isPositionCorrect"],
+                    "orientation_correct": entry["playerValidationSaveObject"]["isOrientationCorrect"],
+                }
+                for entry in validations_list
+            ])
+        else:
+            # When not validation
+            validations_df = pd.DataFrame(columns=["time", "validation", "position_correct", "orientation_correct"])
+
+        return {
+            "player_id": player_id,
+            "start_time": start_time,
+            "save_time": save_time,
+            "device_name": device_name,
+            "player_movement_df": player_movement_df,
+            "challenge_df": challenge_df,
+            "game_events_df": game_events_df,
+            "validations_df": validations_df,
+            "level_number": level_number,
+            "challenge_id": challenge_id,
+            "challenge_duration": challenge_duration,
+        }
+    except (KeyError, IndexError, TypeError) as e:
+        raise GameDataError(f"Game data is missing or has a malformed field: {e}") from e
 
 def get_game_data_dict(file_path: str) -> dict:
     """
     Load game JSON from file and parse into dataframes + metadata.
+    Raises GameDataError if the file is missing or not valid JSON.
     """
-    with open(file_path, mode="r") as f:
-        data = json.load(f)
+    try:
+        with open(file_path, mode="r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise GameDataError(f"Game data file not found: {file_path}")
+    except json.JSONDecodeError as e:
+        raise GameDataError(f"Game data file is not valid JSON: {file_path} ({e})")
 
     return get_game_data_dict_from_dict(data)
 

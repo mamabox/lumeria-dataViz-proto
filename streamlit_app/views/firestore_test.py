@@ -9,6 +9,7 @@ import streamlit as st
 from modules.data_loader import (
    get_game_data_dict_from_dict,
    get_loaded_data,
+   GameDataError,
 )
 
 from modules.firestore_client import (
@@ -73,7 +74,11 @@ with col_c:
 
 # --- Data preview ---
 with st.expander("📊 Data Preview", expanded=True):
-    game_data = get_game_data_dict_from_dict(raw_data)
+    try:
+        game_data = get_game_data_dict_from_dict(raw_data)
+    except GameDataError as e:
+        st.error(str(e))
+        st.stop()
 
     tab1, tab2, tab3 = st.tabs([
         "Challenges", "Game Events", "Validations"
@@ -96,7 +101,11 @@ if st.button("Load session"):
         st.error(f"No data found for {selected_id}")
         st.stop()
 
-    game_data = get_game_data_dict_from_dict(raw_data)
+    try:
+        game_data = get_game_data_dict_from_dict(raw_data)
+    except GameDataError as e:
+        st.error(str(e))
+        st.stop()
 
     existing = st.session_state.get("loaded_data", {})
     # map_image_path=None — not uploadable, get_loaded_data() resolves the
