@@ -5,4 +5,4 @@ numpy
 pillow
 opencv-python-headless
 kaleido==0.2.1
-firebase-adming
+firebase-admin
