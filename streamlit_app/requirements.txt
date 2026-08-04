@@ -4,4 +4,4 @@ pandas
 numpy
 pillow
 opencv-python-headless
-kaleido==0.2.1
+kaleido==0.2.1firebase-adming
