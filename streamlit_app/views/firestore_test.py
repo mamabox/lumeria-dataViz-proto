@@ -1,8 +1,6 @@
 """
 Test page — load game data from Firestore.
 """
-from modules.map_config import get_map_config, LEVELS
-from modules.map_config import get_map_config, LEVELS
 from modules.data_loader import get_buildings_df
 from components.sidebar import DEFAULTS
 from datetime import datetime as dt
@@ -11,7 +9,7 @@ import streamlit as st
 
 from modules.data_loader import (
    get_game_data_dict_from_dict,
-   get_player_timeline_df,
+   get_loaded_data,
 )
 
 from modules.firestore_client import (
@@ -97,34 +95,26 @@ if st.button("Load session"):
 
     if not raw_data:
         st.error(f"No data found for {selected_id}")
-    else:
-        game_data = get_game_data_dict_from_dict(raw_data)
-        timeline_df = get_player_timeline_df(
-            game_data["player_movement_df"],
-            game_data["challenge_df"],
-        )
-        target_building_id = game_data["challenge_df"].iloc[0]["target_building_id"]
+        st.stop()
+
+    game_data = get_game_data_dict_from_dict(raw_data)
 
     existing = st.session_state.get("loaded_data", {})
-    default_level = list(LEVELS.keys())[0]
+    # Always load the full buildings file fresh — get_loaded_data() filters
+    # it down to this session's level, so reusing a cached buildings_df here
+    # could silently carry over a *different* level's already-filtered set.
+    buildings_df = get_buildings_df(DEFAULTS["buildings"])
 
-    map_config = existing.get("map_config")
-    if map_config is None:
-        map_config = get_map_config(**LEVELS[default_level])
-
-    buildings_df = existing.get("buildings_df")
-    if buildings_df is None:
-        buildings_df = get_buildings_df(DEFAULTS["buildings"])
-
-    st.session_state["loaded_data"] = {
-        "map_config": map_config,
-        "map_image_path": existing.get("map_image_path") or DEFAULTS["map_image"],
-        "video_path": existing.get("video_path"),
-        "game_data": game_data,
-        "buildings_df": buildings_df,
-        "timeline_df": timeline_df,
-        "target_building_id": target_building_id,
-    }
+    st.session_state["loaded_data"] = get_loaded_data(
+        game_data,
+        buildings_df,
+        # Reuse an explicit sidebar upload if there is one; otherwise pass
+        # None through so get_loaded_data() resolves this session's own
+        # level default instead of reusing a previous (possibly different
+        # level's) resolved path from `existing`.
+        map_image_path=st.session_state.get("map_image_path"),
+        video_path=existing.get("video_path") or DEFAULTS.get("video"),
+    )
 
     # Clear cached visuals so they rebuild with new data
     st.session_state.pop("snapshots", None)

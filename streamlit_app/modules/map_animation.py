@@ -7,6 +7,7 @@ Pure Python — no streamlit imports.
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+from modules import map_builder
 
 from modules.map_styles import (
     TRAIL_COLOR, TRAIL_SIZE, TRAIL_OPACITY,
@@ -62,16 +63,7 @@ def add_animated_traces(
     indices = {}
 
     # --- Trail (static, but added here to keep trace order clean) ---
-    fig.add_trace(go.Scatter(
-        x=timeline_df["pos_x"].tolist(),
-        y=timeline_df["pos_z"].tolist(),
-        mode="markers",
-        marker=dict(color=TRAIL_COLOR, size=TRAIL_SIZE, opacity=TRAIL_OPACITY),
-        hovertext=[f"{t:.2f}s" for t in timeline_df["time"].tolist()],
-        hoverinfo="text",
-        name="Trail",
-        showlegend=False,
-    ))
+    map_builder.add_trail(fig, timeline_df)
 
     # --- Event traces (one per verb) ---
     event_start = len(fig.data)

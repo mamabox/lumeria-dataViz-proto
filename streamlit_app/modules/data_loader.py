@@ -5,9 +5,15 @@ Pure Python — no streamlit imports.
 """
 
 import json
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
+
+from modules.map_config import get_map_config, LEVELS, MAP_IMAGES
+
+# streamlit_app/ — same depth as components/sidebar.py's _BASE_DIR
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # ======================== LOADING ======================== #
@@ -194,3 +200,46 @@ def get_player_timeline_df(
     )
 
     return df
+
+# ======================== LOADED DATA ======================== #
+
+def get_loaded_data(
+    game_data: dict,
+    buildings_df: pd.DataFrame,
+    map_image_path: str | None,
+    video_path: str | None,
+) -> dict:
+    """
+    Assemble the session payload every view reads: map config and default
+    map image derived from the game data's level, parsed game data, and the
+    merged movement timeline. Single source of truth for this shape so
+    sidebar.py and firestore_test.py can't drift apart on how it's built.
+
+    map_image_path may be None (nothing uploaded) — the level's default
+    background image is resolved here in that case.
+    """
+    level_number = game_data["level_number"]
+    level_key = f"level_{level_number}"
+    map_config = get_map_config(**LEVELS[level_key])
+
+    if map_image_path is None:
+        map_image_path = os.path.join(_BASE_DIR, "defaults", MAP_IMAGES[level_key])
+
+    # buildings_df may span every level — keep only this session's buildings
+    level_buildings_df = buildings_df[buildings_df["level"] == level_number]
+
+    timeline_df = get_player_timeline_df(
+        game_data["player_movement_df"],
+        game_data["challenge_df"],
+    )
+    target_building_id = game_data["challenge_df"].iloc[0]["target_building_id"]
+
+    return {
+        "map_config": map_config,
+        "map_image_path": map_image_path,
+        "video_path": video_path,
+        "game_data": game_data,
+        "buildings_df": level_buildings_df,
+        "timeline_df": timeline_df,
+        "target_building_id": target_building_id,
+    }

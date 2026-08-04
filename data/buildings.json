@@ -1,6 +1,8 @@
 [
    {
       "building_id": "L1-01",
+      "level": 1,
+      "building_number": 1,
       "name": "Butcher",
       "door_orientation": "South",
       "validation_color": "red",
@@ -12,6 +14,8 @@
    },
    {
       "building_id": "L1-02",
+      "level": 1,
+      "building_number": 2,
       "name": "Barn",
       "door_orientation": "East",
       "validation_color": "orange",
@@ -23,6 +27,8 @@
    },
    {
       "building_id": "L1-03",
+      "level": 1,
+      "building_number": 3,
       "name": "Potter",
       "door_orientation": "East",
       "validation_color": "white",
@@ -34,6 +40,8 @@
    },
    {
       "building_id": "L1-04",
+      "level": 1,
+      "building_number": 4,
       "name": "Windmill",
       "door_orientation": "North",
       "validation_color": "green",
@@ -45,6 +53,8 @@
    },
    {
       "building_id": "L1-05",
+      "level": 1,
+      "building_number": 5,
       "name": "Blacksmith",
       "door_orientation": "East",
       "validation_color": "brown",
@@ -56,6 +66,8 @@
    },
    {
       "building_id": "L1-06",
+      "level": 1,
+      "building_number": 6,
       "name": "Tavern",
       "door_orientation": "South",
       "validation_color": "pink",
@@ -67,6 +79,8 @@
    },
    {
       "building_id": "L1-07",
+      "level": 1,
+      "building_number": 7,
       "name": "Bakery",
       "door_orientation": "West",
       "validation_color": "purple",
@@ -78,6 +92,8 @@
    },
    {
       "building_id": "L1-08",
+      "level": 1,
+      "building_number": 8,
       "name": "Tailor",
       "door_orientation": "North",
       "validation_color": "yellow",
@@ -89,6 +105,8 @@
    },
    {
       "building_id": "L1-09",
+      "level": 1,
+      "building_number": 9,
       "name": "Cooper",
       "door_orientation": "West",
       "validation_color": "blue",

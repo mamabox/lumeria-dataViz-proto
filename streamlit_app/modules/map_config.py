@@ -58,3 +58,10 @@ LEVELS = {
     "level_1": {"grid_cols": 6, "grid_rows": 5},
     # "level_0": {"grid_cols": 3, "grid_rows": 2},
 }
+
+# Default map background image per level — filename only, resolved against
+# the app's defaults/ folder by data_loader.get_loaded_data.
+MAP_IMAGES = {
+    "level_1": "example_map_level1.png",
+    # "level_0": "example_map_level0.png",
+}
