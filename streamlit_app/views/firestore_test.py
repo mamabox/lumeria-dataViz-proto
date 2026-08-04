@@ -109,13 +109,13 @@ if st.button("Load session"):
         st.error(str(e))
         st.stop()
 
-    existing = st.session_state.get("loaded_data", {})
+    existing = st.session_state.get("loaded_data")
     # map_image_path=None — not uploadable, get_loaded_data() resolves the
     # level-appropriate default. Buildings are loaded internally there too.
     st.session_state["loaded_data"] = get_loaded_data(
         game_data,
         map_image_path=None,
-        video_path=existing.get("video_path") or DEFAULTS.get("video"),
+        video_path=(existing.video_path if existing else None) or DEFAULTS.get("video"),
     )
 
     # Clear cached visuals so they rebuild with new data

@@ -5,7 +5,7 @@ This is the only place users interact with data loading.
 
 import streamlit as st
 import os
-from modules.data_loader import get_game_data_dict, get_loaded_data, GameDataError
+from modules.data_loader import get_game_data_dict, get_loaded_data, GameDataError, LoadedData
 
 # Get the directory where sidebar.py lives (streamlit_app/components/)
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +22,7 @@ DEFAULTS = {
 if os.path.exists(os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")):
     DEFAULTS["video"] = os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")
 
-def render_sidebar():
+def render_sidebar() -> LoadedData:
     #st.sidebar.title("Settings")
 
     # --- Level selection ---

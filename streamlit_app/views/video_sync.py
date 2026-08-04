@@ -23,7 +23,7 @@ import os
 data = render_sidebar()
 
 # --- Check for video ---
-if not data.get("video_path"):
+if not data.video_path:
     st.info("No gameplay video available. Upload one in the sidebar.")
     st.stop()
 
@@ -32,14 +32,14 @@ st.title("Replay and video")
 
 # --- Challenge info ---
 st.caption(
-    f"Challenge {data['game_data']['challenge_id']} — "
-    f"Duration: {data['game_data']['challenge_duration']:.2f}s — "
-    f"Player: {data['game_data']['player_id']}"
+    f"Challenge {data.game_data['challenge_id']} — "
+    f"Duration: {data.game_data['challenge_duration']:.2f}s — "
+    f"Player: {data.game_data['player_id']}"
 )
 
 # --- Video player (persist across reruns) ---
 if "video_player" not in st.session_state:
-    st.session_state["video_player"] = VideoPlayer(data["video_path"])
+    st.session_state["video_player"] = VideoPlayer(data.video_path)
 
 player = st.session_state["video_player"]
 
@@ -47,7 +47,7 @@ player = st.session_state["video_player"]
 with st.expander("🎥 Set Video Offset", expanded=True):
     col_vid, col_offset = st.columns([3, 1])
     with col_vid:
-        st.video(data["video_path"], start_time=0)
+        st.video(data.video_path, start_time=0)
     with col_offset:
         offset = st.number_input(
             "Game starts at (seconds)",
@@ -62,15 +62,15 @@ offset = st.session_state.get("video_offset", 0.0)
 if "snapshots" not in st.session_state:
     with st.spinner("Preparing frames..."):
         fig = build_base_figure(
-            map_image_path=data["map_image_path"],
-            map_config=data["map_config"],
-            buildings_df=data["buildings_df"],
-            target_building_id=data["target_building_id"],
+            map_image_path=data.map_image_path,
+            map_config=data.map_config,
+            buildings_df=data.buildings_df,
+            target_building_id=data.target_building_id,
         )
         fig = build_animated_figure(
             fig=fig,
-            timeline_df=data["timeline_df"],
-            game_events_df=data["game_data"]["game_events_df"],
+            timeline_df=data.timeline_df,
+            game_events_df=data.game_data["game_events_df"],
         )
 
         fig.update_layout(
@@ -82,15 +82,15 @@ if "snapshots" not in st.session_state:
         st.session_state["animated_fig"] = fig
         st.session_state["snapshots"] = [
             get_frame_snapshot(fig, i)
-            for i in range(len(data["timeline_df"]))
+            for i in range(len(data.timeline_df))
         ]
 
 
 # --- Event timeline strip ---
 event_timeline = build_event_timeline(
-    timeline_df=data["timeline_df"],
-    game_events_df=data["game_data"]["game_events_df"],
-    player_movement_df=data["timeline_df"],
+    timeline_df=data.timeline_df,
+    game_events_df=data.game_data["game_events_df"],
+    player_movement_df=data.timeline_df,
 )
 st.plotly_chart(
     event_timeline,
@@ -105,7 +105,7 @@ st.plotly_chart(
 # --- 2. Synced scrubbing ---
 st.markdown("---")
 
-time_list = data["timeline_df"]["time"].tolist()
+time_list = data.timeline_df["time"].tolist()
 total_frames = len(time_list)
 
 if "frame_slider" not in st.session_state:
@@ -140,7 +140,7 @@ with col_slider:
     )
     # Last recorded frame strictly before the selected time; clamp -1
     # (before the first sample) to the first frame.
-    frame_index = get_nearest_index_for_time(data["timeline_df"], game_time_slider)
+    frame_index = get_nearest_index_for_time(data.timeline_df, game_time_slider)
     if frame_index == -1:
         frame_index = 0
 
@@ -178,8 +178,8 @@ if st.button("Export video"):
     try:
         export_combined_video(
             animated_fig=st.session_state["animated_fig"],
-            video_path=data["video_path"],
-            timeline_df=data["timeline_df"],
+            video_path=data.video_path,
+            timeline_df=data.timeline_df,
             output_path=OUTPUT_PATH,
             offset=offset,
             speed=speed,
@@ -211,8 +211,8 @@ with col_png:
             start = time.time()
             export_combined_video(
                 animated_fig=st.session_state["animated_fig"],
-                video_path=data["video_path"],
-                timeline_df=data["timeline_df"],
+                video_path=data.video_path,
+                timeline_df=data.timeline_df,
                 output_path=OUTPUT_PATH_PNG,
                 offset=offset,
                 speed=speed,
@@ -233,8 +233,8 @@ with col_pipe:
             start = time.time()
             export_combined_video_pipe(
                 animated_fig=st.session_state["animated_fig"],
-                video_path=data["video_path"],
-                timeline_df=data["timeline_df"],
+                video_path=data.video_path,
+                timeline_df=data.timeline_df,
                 output_path=OUTPUT_PATH_PIPE,
                 offset=offset,
                 speed=speed,

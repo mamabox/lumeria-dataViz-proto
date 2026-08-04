@@ -8,9 +8,23 @@ import json
 import os
 import pandas as pd
 import numpy as np
+from dataclasses import dataclass
 from datetime import datetime
 
 from modules.map_config import get_map_config, LEVELS, MAP_IMAGES
+
+
+@dataclass
+class LoadedData:
+    """The session payload every view reads, built once by get_loaded_data()."""
+
+    map_config: dict
+    map_image_path: str
+    video_path: str | None
+    game_data: dict
+    buildings_df: pd.DataFrame
+    timeline_df: pd.DataFrame
+    target_building_id: str
 
 # streamlit_app/ — same depth as components/sidebar.py's _BASE_DIR
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -56,7 +70,7 @@ def get_game_data_dict_from_dict(data: dict) -> dict:
 
         # --- Challenge / attempts ---
         challenge_list = data["challengesSaveObject"]["challengesList"][0]
-        level_number: str = challenge_list["levelNumber"]
+        level_number: int = challenge_list["levelNumber"]
         challenge_id = challenge_list["challengeId"]
         challenge_duration = float(challenge_list["challengeDuration"])
 
@@ -152,10 +166,10 @@ def get_nearest_index_for_time(
     df: pd.DataFrame, time: float, time_col: str = "time"
 ) -> int:
     """
-    Find the index of the last row where time_col < given time.
+    Find the index of the last row where time_col <= given time.
     Returns -1 if no match.
     """
-    matches = df[df[time_col] < time][time_col]
+    matches = df[df[time_col] <= time][time_col]
     if matches.empty:
         return -1
     return int(matches.idxmax())
@@ -224,7 +238,7 @@ def get_loaded_data(
     game_data: dict,
     map_image_path: str | None,
     video_path: str | None,
-) -> dict:
+) -> LoadedData:
     """
     Assemble the session payload every view reads: map config and default
     map image derived from the game data's level, the canonical buildings
@@ -253,12 +267,12 @@ def get_loaded_data(
     )
     target_building_id = game_data["challenge_df"].iloc[0]["target_building_id"]
 
-    return {
-        "map_config": map_config,
-        "map_image_path": map_image_path,
-        "video_path": video_path,
-        "game_data": game_data,
-        "buildings_df": level_buildings_df,
-        "timeline_df": timeline_df,
-        "target_building_id": target_building_id,
-    }
+    return LoadedData(
+        map_config=map_config,
+        map_image_path=map_image_path,
+        video_path=video_path,
+        game_data=game_data,
+        buildings_df=level_buildings_df,
+        timeline_df=timeline_df,
+        target_building_id=target_building_id,
+    )

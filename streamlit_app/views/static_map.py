@@ -16,13 +16,13 @@ st.title("Static Map")
 
 # --- Build figure ---
 fig = build_static_figure(
-    map_image_path=data["map_image_path"],
-    map_config=data["map_config"],
-    buildings_df=data["buildings_df"],
-    target_building_id=data["target_building_id"],
-    timeline_df=data["timeline_df"],
-    game_events_df=data["game_data"]["game_events_df"],
-    title=f"Player {data['game_data']['player_id']} — Challenge {data['game_data']['challenge_id']}",
+    map_image_path=data.map_image_path,
+    map_config=data.map_config,
+    buildings_df=data.buildings_df,
+    target_building_id=data.target_building_id,
+    timeline_df=data.timeline_df,
+    game_events_df=data.game_data["game_events_df"],
+    title=f"Player {data.game_data['player_id']} — Challenge {data.game_data['challenge_id']}",
 )
 
 # --- Display ---
@@ -38,14 +38,14 @@ with col1:
 
 with col2:
     csv_download_button(
-        data["timeline_df"],
+        data.timeline_df,
         filename="player_movement.csv",
         label="📄 Movements CSV",
     )
 
 with col3:
     csv_download_button(
-        data["game_data"]["game_events_df"],
+        data.game_data["game_events_df"],
         filename="game_events.csv",
         label="📄 Events CSV",
     )

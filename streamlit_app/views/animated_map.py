@@ -18,18 +18,18 @@ st.title("Animated Map")
 
 # --- Build figure ---
 fig = build_base_figure(
-    map_image_path=data["map_image_path"],
-    map_config=data["map_config"],
-    buildings_df=data["buildings_df"],
-    target_building_id=data["target_building_id"],
+    map_image_path=data.map_image_path,
+    map_config=data.map_config,
+    buildings_df=data.buildings_df,
+    target_building_id=data.target_building_id,
 )
 
 fig = build_animated_figure(
     fig=fig,
-    timeline_df=data["timeline_df"],
-    game_events_df=data["game_data"]["game_events_df"],
-    challenge_id=data["game_data"]["challenge_id"],
-    challenge_duration=data["game_data"]["challenge_duration"],
+    timeline_df=data.timeline_df,
+    game_events_df=data.game_data["game_events_df"],
+    challenge_id=data.game_data["challenge_id"],
+    challenge_duration=data.game_data["challenge_duration"],
 )
 
 
@@ -65,14 +65,14 @@ with col1:
 
 with col2:
     csv_download_button(
-        data["timeline_df"],
+        data.timeline_df,
         filename="player_movement.csv",
         label="📄 Movement CSV",
     )
 
 with col3:
     csv_download_button(
-        data["game_data"]["game_events_df"],
+        data.game_data["game_events_df"],
         filename="game_events.csv",
         label="📄 Events CSV",
     )

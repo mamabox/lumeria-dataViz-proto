@@ -53,27 +53,27 @@ col_a, col_f, col_b, col_c, col_d, col_e = st.columns(6)
 
 with col_a:
     st.caption("Player")
-    st.write(data["game_data"]["player_id"])
+    st.write(data.game_data["player_id"])
 
 with col_b:
     st.caption("Challenge")
-    st.write(data["game_data"]["challenge_id"])
+    st.write(data.game_data["challenge_id"])
 
 with col_c:
     st.caption("Duration")
-    st.write(f"{data['game_data']['challenge_duration']:.1f}s")
+    st.write(f"{data.game_data['challenge_duration']:.1f}s")
 
 with col_d:
     st.caption("Data Points")
-    st.write(len(data["timeline_df"]))
+    st.write(len(data.timeline_df))
 
 with col_e:
     st.caption("Save Time")
-    st.write(data["game_data"]["save_time"].strftime("%Y-%m-%d %H:%M"))
+    st.write(data.game_data["save_time"].strftime("%Y-%m-%d %H:%M"))
 
 with col_f:
     st.caption("Level")
-    st.write(data["game_data"]["level_number"])
+    st.write(data.game_data["level_number"])
 
 # --- Data preview ---
 with st.expander("📊 Data Preview", expanded=True):
@@ -82,13 +82,13 @@ with st.expander("📊 Data Preview", expanded=True):
     ])
 
     with tab1:
-        st.dataframe(data["game_data"]["challenge_df"], width="stretch")
+        st.dataframe(data.game_data["challenge_df"], width="stretch")
 
     with tab2:
-        st.dataframe(data["game_data"]["game_events_df"], width="stretch")
+        st.dataframe(data.game_data["game_events_df"], width="stretch")
 
     with tab3:
-        st.dataframe(data["game_data"]["validations_df"], width="stretch")
+        st.dataframe(data.game_data["validations_df"], width="stretch")
 
     with tab4:
-        st.dataframe(data["timeline_df"].head(10), width="stretch")
+        st.dataframe(data.timeline_df.head(10), width="stretch")
