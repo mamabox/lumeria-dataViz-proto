@@ -48,9 +48,6 @@ def export_animation_to_mp4(
     Render the animated figure's frames to MP4.
     Pulls frame data directly from the figure.
     """
-    import cv2
-    import numpy as np
-    import plotly.graph_objects as go
 
     if not fig.frames:
         raise ValueError("Figure has no animation frames")

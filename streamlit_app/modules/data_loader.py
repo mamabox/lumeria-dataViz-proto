@@ -15,6 +15,9 @@ from modules.map_config import get_map_config, LEVELS, MAP_IMAGES
 # streamlit_app/ — same depth as components/sidebar.py's _BASE_DIR
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Single canonical buildings file, spans every level — not user-uploadable
+_BUILDINGS_PATH = os.path.join(_BASE_DIR, "defaults", "example_buildings.json")
+
 
 # ======================== LOADING ======================== #
 
@@ -205,18 +208,19 @@ def get_player_timeline_df(
 
 def get_loaded_data(
     game_data: dict,
-    buildings_df: pd.DataFrame,
     map_image_path: str | None,
     video_path: str | None,
 ) -> dict:
     """
     Assemble the session payload every view reads: map config and default
-    map image derived from the game data's level, parsed game data, and the
-    merged movement timeline. Single source of truth for this shape so
-    sidebar.py and firestore_test.py can't drift apart on how it's built.
+    map image derived from the game data's level, the canonical buildings
+    file filtered to that level, parsed game data, and the merged movement
+    timeline. Single source of truth for this shape so sidebar.py and
+    firestore_test.py can't drift apart on how it's built.
 
     map_image_path may be None (nothing uploaded) — the level's default
-    background image is resolved here in that case.
+    background image is resolved here in that case. Buildings aren't
+    user-uploadable at all — always loaded from the one canonical file.
     """
     level_number = game_data["level_number"]
     level_key = f"level_{level_number}"
@@ -225,7 +229,8 @@ def get_loaded_data(
     if map_image_path is None:
         map_image_path = os.path.join(_BASE_DIR, "defaults", MAP_IMAGES[level_key])
 
-    # buildings_df may span every level — keep only this session's buildings
+    # Single buildings file spans every level — keep only this session's
+    buildings_df = get_buildings_df(_BUILDINGS_PATH)
     level_buildings_df = buildings_df[buildings_df["level"] == level_number]
 
     timeline_df = get_player_timeline_df(

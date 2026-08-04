@@ -5,17 +5,17 @@ This is the only place users interact with data loading.
 
 import streamlit as st
 import os
-from modules.data_loader import get_game_data_dict, get_buildings_df, get_loaded_data
+from modules.data_loader import get_game_data_dict, get_loaded_data
 
 # Get the directory where sidebar.py lives (streamlit_app/components/)
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Default file paths (relative to streamlit_app/)
-# Note: no "map_image" default here — that's level-specific, resolved by
-# data_loader.get_loaded_data() from the loaded game data's level.
+# Note: buildings and map image aren't uploadable — buildings.json is one
+# canonical file covering every level, and the map image is resolved per
+# level. Both are handled entirely inside data_loader.get_loaded_data().
 DEFAULTS = {
     "game_data": os.path.join(_BASE_DIR, "defaults", "example_game_data.json"),
-    "buildings": os.path.join(_BASE_DIR, "defaults", "example_buildings.json"),
 }
 
 if os.path.exists(os.path.join(_BASE_DIR, "defaults", "example_gameplay.mp4")):
@@ -40,12 +40,6 @@ def render_sidebar():
     game_file = st.sidebar.file_uploader(
         "Game data JSON", type=["json"], key="game_upload"
     )
-    buildings_file = st.sidebar.file_uploader(
-        "Buildings JSON", type=["json"], key="buildings_upload"
-    )
-    map_image_file = st.sidebar.file_uploader(
-        "Map image", type=["png", "jpg"], key="map_upload"
-    )
     video_file = st.sidebar.file_uploader(
         "Gameplay video", type=["mp4"], key="video_upload"
     )
@@ -54,18 +48,6 @@ def render_sidebar():
     if game_file:
         st.session_state["game_data_path"] = _save_upload(game_file, "game_data.json")
         # Clear cached data so it reloads
-        st.session_state.pop("loaded_data", None)
-        st.session_state.pop("snapshots", None)
-        st.session_state.pop("animated_fig", None)
-
-    if buildings_file:
-        st.session_state["buildings_path"] = _save_upload(buildings_file, "buildings.json")
-        st.session_state.pop("loaded_data", None)
-        st.session_state.pop("snapshots", None)
-        st.session_state.pop("animated_fig", None)
-
-    if map_image_file:
-        st.session_state["map_image_path"] = _save_upload(map_image_file, "map_image.png")
         st.session_state.pop("loaded_data", None)
         st.session_state.pop("snapshots", None)
         st.session_state.pop("animated_fig", None)
@@ -79,8 +61,6 @@ def render_sidebar():
     st.sidebar.markdown("---")
     if st.sidebar.button("Reset to example data"):
         st.session_state.pop("game_data_path", None)
-        st.session_state.pop("buildings_path", None)
-        st.session_state.pop("map_image_path", None)
         st.session_state.pop("video_path", None)
         st.session_state.pop("loaded_data", None)
         st.session_state.pop("snapshots", None)
@@ -91,18 +71,15 @@ def render_sidebar():
 
     # --- Resolve paths (uploaded or defaults) ---
     game_data_path = st.session_state.get("game_data_path", DEFAULTS["game_data"])
-    buildings_path = st.session_state.get("buildings_path", DEFAULTS["buildings"])
-    # None (no default) is intentional — get_loaded_data() resolves the
-    # level-appropriate default map image when nothing's been uploaded.
-    map_image_path = st.session_state.get("map_image_path")
     video_path = st.session_state.get("video_path", DEFAULTS.get("video"))
 
     # --- Load data (cached in session state) ---
     if "loaded_data" not in st.session_state:
         game_data = get_game_data_dict(game_data_path)
-        buildings_df = get_buildings_df(buildings_path)
+        # map_image_path=None — not uploadable, get_loaded_data() resolves
+        # the level-appropriate default.
         st.session_state["loaded_data"] = get_loaded_data(
-            game_data, buildings_df, map_image_path, video_path
+            game_data, map_image_path=None, video_path=video_path
         )
 
     return st.session_state["loaded_data"]
@@ -111,7 +88,7 @@ def render_sidebar():
 def _save_upload(uploaded_file, filename: str) -> str:
     """
     Save an uploaded file to a temp location and return the path.
-    Streamlit uploads are bytes — we need a file path for PIL and json.
+    Streamlit uploads are bytes — we need a file path for json and cv2.
     """
     temp_dir = "temp_uploads"
     os.makedirs(temp_dir, exist_ok=True)

@@ -1,7 +1,6 @@
 """
 Test page — load game data from Firestore.
 """
-from modules.data_loader import get_buildings_df
 from components.sidebar import DEFAULTS
 from datetime import datetime as dt
 
@@ -100,19 +99,11 @@ if st.button("Load session"):
     game_data = get_game_data_dict_from_dict(raw_data)
 
     existing = st.session_state.get("loaded_data", {})
-    # Always load the full buildings file fresh — get_loaded_data() filters
-    # it down to this session's level, so reusing a cached buildings_df here
-    # could silently carry over a *different* level's already-filtered set.
-    buildings_df = get_buildings_df(DEFAULTS["buildings"])
-
+    # map_image_path=None — not uploadable, get_loaded_data() resolves the
+    # level-appropriate default. Buildings are loaded internally there too.
     st.session_state["loaded_data"] = get_loaded_data(
         game_data,
-        buildings_df,
-        # Reuse an explicit sidebar upload if there is one; otherwise pass
-        # None through so get_loaded_data() resolves this session's own
-        # level default instead of reusing a previous (possibly different
-        # level's) resolved path from `existing`.
-        map_image_path=st.session_state.get("map_image_path"),
+        map_image_path=None,
         video_path=existing.get("video_path") or DEFAULTS.get("video"),
     )
 

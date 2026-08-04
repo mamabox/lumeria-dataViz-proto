@@ -13,6 +13,7 @@ from modules.map_animation import build_animated_figure, get_frame_snapshot
 from modules.map_builder import build_event_timeline
 from modules.video_exporter import export_combined_video
 from modules.video_exporter_pipe import export_combined_video_pipe
+from modules.data_loader import get_nearest_index_for_time
 
 import tempfile
 import os
@@ -111,14 +112,9 @@ if "frame_slider" not in st.session_state:
     st.session_state["frame_slider"] = float(time_list[0])
 
 def on_time_jump():
-    """When user types a time, find nearest frame and move slider."""
-    target = st.session_state["time_jump"]
-    for j in range(len(time_list)):
-        if time_list[j] > target:
-            break
-        nearest = j
+    """When user types a time, move the slider to that time."""
     st.session_state["frame_slider"] = st.session_state["time_jump"]
-    
+
 
 col_slider, col_input = st.columns([4, 1])
 
@@ -142,13 +138,11 @@ with col_slider:
         label_visibility="collapsed",
         format="%.1fs",
     )
-    # Find nearest frame index for the selected time
-    frame_index = 0
-    for j in range(len(time_list)):
-        if time_list[j] <= game_time_slider:
-            frame_index = j
-        else:
-            break
+    # Last recorded frame strictly before the selected time; clamp -1
+    # (before the first sample) to the first frame.
+    frame_index = get_nearest_index_for_time(data["timeline_df"], game_time_slider)
+    if frame_index == -1:
+        frame_index = 0
 
 game_time = time_list[frame_index]
 st.caption(f"Game Time: {game_time:.2f}s | Video Time: {game_time + offset:.2f}s")

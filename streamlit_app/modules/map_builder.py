@@ -264,7 +264,6 @@ def build_event_timeline(
     Build a horizontal timeline bar showing events as icons.
     Hover for details. No interaction — visual reference only.
     """
-    from modules.map_styles import EVENT_STYLES, ATTEMPT_COLORS
 
     time_min = timeline_df["time"].min()
     time_max = timeline_df["time"].max()
