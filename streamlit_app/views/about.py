@@ -51,11 +51,9 @@ st.header("Built by")
 st.markdown("""
 **Fatou-Maty Diouf**
 
-Designer and developer of Luméria's virtual environment — the city, the game logic, the tablet and VR experiences — built with Unity.
+Designer and developer of Luméria's virtual environment, built with Unity.
 
-This visualization tool was developed as an independent initiative.
-
-While working with the research team, I noticed a gap. We had tools to inspect everything around the game board, but none to retrace the player's journey through the virtual environment. Noticing that blind spot led to deciding what data needed to be captured and building the tool to explore it as one continuous process. For me, seeing what's missing and building it are part of the same instinct.
+This visualization tool was developed as an independent initiative. We had tools to inspect everything around the game board, but none to retrace the player's journey through the virtual environment. Noticing that blind spot led to deciding what data needed to be captured and building the tool to explore it as one continuous process.
 
 Built as a capstone project for the  [Python Programming certification](https://nomades.ch/certification/certifications-python-programming-language/) at Nomades.
 """)
