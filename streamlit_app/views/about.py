@@ -73,16 +73,14 @@ with st.expander("Tech Stack", expanded=True):
 # --- Links ---
 st.markdown("---")
 
-col_a, col_b, col_c,col_d = st.columns(4)
+col_a, col_b, col_c = st.columns(3)
 
 with col_a:
     st.link_button("DEEP Space Project", "https://tecfa.unige.ch/tecfa/research/deepspace/")
 
 with col_b:
-    st.link_button("TECFA, University of Geneva", "https://tecfa.unige.ch/")
+    st.link_button("Contact", "https://www.mamafatou.com")
 
 with col_c:
     st.link_button("Python Certification (Nomades)", "https://nomades.ch/certification/certifications-python-programming-language/")
 
-with col_d:
-    st.link_button("Contact", "https://www.linkedin.com/in/fmdiouf/")
